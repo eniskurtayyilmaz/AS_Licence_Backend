@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.2.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.6" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
+    <PackageReference Include="xunit" Version="2.4.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
+    <PackageReference Include="FluentValidation" Version="8.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AS_Licence.Data.Interface\AS_Licence.Data.Interface.csproj" />
+    <ProjectReference Include="..\AS_Licence.Data.Repository\AS_Licence.Data.Repository.csproj" />
+    <ProjectReference Include="..\AS_Licence.Entities.Model\AS_Licence.Entities.Model.csproj" />
+    <ProjectReference Include="..\AS_Licence.Entities.ViewModel\AS_Licence.Entities.ViewModel.csproj" />
+    <ProjectReference Include="..\AS_Licence.Service.Host\AS_Licence.Service.Host.csproj" />
+    <ProjectReference Include="..\AS_Licence.Service.Interface\AS_Licence.Service.Interface.csproj" />
+    <ProjectReference Include="..\AS_Licence.Entites.Validation\AS_Licence.Entites.Validation.csproj" />
+    <ProjectReference Include="..\AS_Licence.Helpers.Extension\AS_Licence.Helpers.Extension.csproj" />
+  </ItemGroup>
+
+</Project>

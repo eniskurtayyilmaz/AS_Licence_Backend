@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AS_Licence.Data.Interface\AS_Licence.Data.Interface.csproj" />
+    <ProjectReference Include="..\AS_Licence.Entites.Map\AS_Licence.Entites.Map.csproj" />
+    <ProjectReference Include="..\AS_Licence.Entites.Validation\AS_Licence.Entites.Validation.csproj" />
+    <ProjectReference Include="..\AS_Licence.Helpers.Extension\AS_Licence.Helpers.Extension.csproj" />
+    <ProjectReference Include="..\AS_Licence.Service.Interface\AS_Licence.Service.Interface.csproj" />
+  </ItemGroup>
+
+</Project>
