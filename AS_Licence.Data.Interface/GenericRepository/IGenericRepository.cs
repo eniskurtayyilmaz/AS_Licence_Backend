@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace AS_Licence.Data.Interface.GenericRepository
 {
@@ -10,13 +11,13 @@ namespace AS_Licence.Data.Interface.GenericRepository
     /*
      *dal.Get(x=> x.Property == )
      */
-    List<TEntity> Get(Expression<Func<TEntity, bool>> filter = null,
+    Task<List<TEntity>> Get(Expression<Func<TEntity, bool>> filter = null,
       Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
       string includeProperties = "");
-    TEntity GetById(object id);
-    void Insert(TEntity entityToInsert);
-    void Update(TEntity entityToUpdate);
-    void Delete(object id);
-    void Delete(TEntity entityToDelete);
+    Task<TEntity> GetById(object id);
+    Task Insert(TEntity entityToInsert);
+    Task Update(TEntity entityToUpdate);
+    Task Delete(object id);
+    Task Delete(TEntity entityToDelete);
   }
 }

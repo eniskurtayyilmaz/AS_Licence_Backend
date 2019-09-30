@@ -45,12 +45,12 @@ namespace AS_Licence.WebUI.CoreAPI
       });
 
 
-      services.AddDbContext<EfAsLicenceContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
+      services.AddDbContext<EfAsLicenceContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"], b => b.MigrationsAssembly("AS_Licence.WebUI.CoreAPI")));
       services.AddTransient<IUnitOfWork, EfUnitOfWork>();
       /*
     private readonly ICustomerManager _customerManager;
     */
-      
+
       services.AddTransient<ICustomerManager, CustomerService>();
       services.AddTransient<ICustomerComputerInfoManager, CustomerComputerInfoService>();
       services.AddTransient<ISubscriptionManager, SubscriptionService>();

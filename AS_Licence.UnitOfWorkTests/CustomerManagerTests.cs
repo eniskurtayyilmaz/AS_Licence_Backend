@@ -2,6 +2,7 @@ using AS_Licence.Data.Repository.Host.EntityFramework;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using AS_Licence.Data.Repository.UnitOfWork.EntityFramework;
 using Xunit;
 using AS_Licence.Data.Interface.UnitOfWork;
@@ -31,7 +32,7 @@ namespace AS_Licence.UnitOfWorkTests
       _customerManager = new CustomerService(_unitOfWork);
     }
     [Fact]
-    public void Can_Add_Customer_Thought_UnitOfWork()
+    public async Task Can_Add_Customer_Thought_UnitOfWork()
     {
       //Arrange
       var customerModel = new Customer()
@@ -44,7 +45,7 @@ namespace AS_Licence.UnitOfWorkTests
       };
 
       //Action
-      var result = _customerManager.SaveCustomer(customerModel);
+      var result = await _customerManager.SaveCustomer(customerModel);
 
       //Asserts
       if (result.Status == false)
@@ -55,17 +56,17 @@ namespace AS_Licence.UnitOfWorkTests
       Assert.True(result.Status);
       Assert.True(customerModel.CustomerId > 0);
 
-      Can_Delete_Exists_Customer_Thought_UnitOfWork(customerModel.CustomerId);
+     await Can_Delete_Exists_Customer_Thought_UnitOfWork(customerModel.CustomerId);
     }
 
 
-    private void Can_Delete_Exists_Customer_Thought_UnitOfWork(int customerId)
+    private async Task Can_Delete_Exists_Customer_Thought_UnitOfWork(int customerId)
     {
       //Arrange
 
 
       //Action
-      var result = _customerManager.DeleteCustomerByCustomerId(customerId);
+      var result = await _customerManager.DeleteCustomerByCustomerId(customerId);
 
       //Asserts
       if (result.Status == false)

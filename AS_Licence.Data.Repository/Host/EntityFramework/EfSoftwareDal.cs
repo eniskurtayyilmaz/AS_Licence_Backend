@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using AS_Licence.Data.Interface.DataAccess;
 using AS_Licence.Data.Repository.Infrastracture.EntityFramework;
 using AS_Licence.Entities.Model.Software;
@@ -17,9 +18,9 @@ namespace AS_Licence.Data.Repository.Host.EntityFramework
       _context = context;
     }
 
-    public Software GetSoftwareByName(string softwareName)
+    public async Task<Software> GetSoftwareByName(string softwareName)
     {
-      return this.Get(x => x.SoftwareName == softwareName).SingleOrDefault();
+      return this.Get(x => x.SoftwareName == softwareName).Result.SingleOrDefault();
     }
   }
 }

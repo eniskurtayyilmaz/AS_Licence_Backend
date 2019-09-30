@@ -23,10 +23,9 @@ namespace AS_Licence.WebUI.CoreAPI.Controllers
 
     [HttpGet]
     [Route("GetSoftwareLists")]
-    //TODO:async hatalarını çözümle
     public async Task<IActionResult> Get()
     {
-      var softwareResult = _softwareManager.GetSoftwareList();
+      var softwareResult = await _softwareManager.GetSoftwareList();
       if (softwareResult.Status == false)
       {
         return BadRequest(softwareResult);
@@ -39,7 +38,7 @@ namespace AS_Licence.WebUI.CoreAPI.Controllers
     [Route("SaveSoftware")]
     public async Task<IActionResult> Post([FromBody] Software software)
     {
-      var softwareResult = _softwareManager.SaveSoftware(software);
+      var softwareResult = await _softwareManager.SaveSoftware(software);
       if (softwareResult.Status == false)
       {
         return BadRequest(softwareResult);
@@ -52,7 +51,7 @@ namespace AS_Licence.WebUI.CoreAPI.Controllers
     [Route("DeleteSoftware")]
     public async Task<IActionResult> Post(int softwareId)
     {
-      var softwareResult = _softwareManager.DeleteSoftwareBySoftwareId(softwareId);
+      var softwareResult = await _softwareManager.DeleteSoftwareBySoftwareId(softwareId);
       if (softwareResult.Status == false)
       {
         return BadRequest(softwareResult);

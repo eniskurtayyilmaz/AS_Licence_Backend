@@ -1,7 +1,9 @@
+using System.Threading.Tasks;
 using AS_Licence.Data.Interface.UnitOfWork;
 using AS_Licence.Data.Repository.Host.EntityFramework;
 using AS_Licence.Data.Repository.UnitOfWork.EntityFramework;
 using AS_Licence.Entities.Model.Software;
+using AS_Licence.Service.Host.Customer;
 using AS_Licence.Service.Host.Software;
 using AS_Licence.Service.Host.Subscription;
 using AS_Licence.Service.Interface.Software;
@@ -26,10 +28,10 @@ namespace AS_Licence.UnitOfWorkTests
 
       _unitOfWork = new EfUnitOfWork(context);
 
-      _softwareManager = new SoftwareService(_unitOfWork, new SubscriptionService(_unitOfWork));
+      _softwareManager = new SoftwareService(_unitOfWork);
     }
     [Fact]
-    public void Can_Add_Software_Thought_UnitOfWork()
+    public async Task Can_Add_Software_Thought_UnitOfWork()
     {
       //Arrange
       var softwareModel = new Software()
@@ -41,7 +43,7 @@ namespace AS_Licence.UnitOfWorkTests
       };
 
       //Action
-      var result = _softwareManager.SaveSoftware(softwareModel);
+      var result = await _softwareManager.SaveSoftware(softwareModel);
 
       //Asserts
       if (result.Status == false)
@@ -52,17 +54,17 @@ namespace AS_Licence.UnitOfWorkTests
       Assert.True(result.Status);
       Assert.True(softwareModel.SoftwareId > 0);
 
-      Can_Delete_Exists_Software_Thought_UnitOfWork(softwareModel.SoftwareId);
+      await Can_Delete_Exists_Software_Thought_UnitOfWork(softwareModel.SoftwareId);
     }
 
 
-    private void Can_Delete_Exists_Software_Thought_UnitOfWork(int softwareId)
+    private async Task Can_Delete_Exists_Software_Thought_UnitOfWork(int softwareId)
     {
       //Arrange
 
 
       //Action
-      var result = _softwareManager.DeleteSoftwareBySoftwareId(softwareId);
+      var result = await _softwareManager.DeleteSoftwareBySoftwareId(softwareId);
 
       //Asserts
       if (result.Status == false)

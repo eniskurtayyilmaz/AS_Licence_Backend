@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using AS_Licence.Data.Interface.DataAccess;
 using AS_Licence.Data.Repository.Infrastracture.EntityFramework;
 using AS_Licence.Entities.Model.Customer;
@@ -18,9 +19,9 @@ namespace AS_Licence.Data.Repository.Host.EntityFramework
     }
 
 
-    public Customer GetCustomerByEmail(string customerEmail)
+    public async Task<Customer> GetCustomerByEmail(string customerEmail)
     {
-      return this.Get(x => x.CustomerEMail == customerEmail).SingleOrDefault();
+      return Get(x => x.CustomerEMail == customerEmail).Result.SingleOrDefault();
     }
   }
 }

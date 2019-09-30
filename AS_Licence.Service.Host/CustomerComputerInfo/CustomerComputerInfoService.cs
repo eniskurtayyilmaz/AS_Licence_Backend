@@ -7,7 +7,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using AS_Licence.Entites.Validation.CustomerComputerInfo;
+using AS_Licence.Service.Interface.Software;
+using AS_Licence.Service.Interface.Subscription;
 
 namespace AS_Licence.Service.Host.CustomerComputerInfo
 {
@@ -15,18 +18,25 @@ namespace AS_Licence.Service.Host.CustomerComputerInfo
   public class CustomerComputerInfoService : ICustomerComputerInfoManager
   {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ISubscriptionManager _subscriptionManager;
 
-    public CustomerComputerInfoService(IUnitOfWork unitOfWork)
+    public CustomerComputerInfoService(IUnitOfWork unitOfWork, ISubscriptionManager subscriptionManager)
     {
       _unitOfWork = unitOfWork;
+      _subscriptionManager = subscriptionManager;
     }
 
-    public OperationResponse<List<Entities.Model.CustomerComputerInfo.CustomerComputerInfo>> GetCustomerComputerInfoList(Expression<Func<Entities.Model.CustomerComputerInfo.CustomerComputerInfo, bool>> filter = null, Func<IQueryable<Entities.Model.CustomerComputerInfo.CustomerComputerInfo>, IOrderedQueryable<Entities.Model.CustomerComputerInfo.CustomerComputerInfo>> orderBy = null, string includeProperties = "")
+    public async Task<OperationResponse<List<Entities.Model.CustomerComputerInfo.CustomerComputerInfo>>>
+      GetCustomerComputerInfoList(
+        Expression<Func<Entities.Model.CustomerComputerInfo.CustomerComputerInfo, bool>> filter = null,
+        Func<IQueryable<Entities.Model.CustomerComputerInfo.CustomerComputerInfo>,
+          IOrderedQueryable<Entities.Model.CustomerComputerInfo.CustomerComputerInfo>> orderBy = null,
+        string includeProperties = "")
     {
       OperationResponse<List<Entities.Model.CustomerComputerInfo.CustomerComputerInfo>> response = new OperationResponse<List<Entities.Model.CustomerComputerInfo.CustomerComputerInfo>>();
       try
       {
-        response.Data = _unitOfWork.CustomerComputerInfoRepository.Get(filter, orderBy, includeProperties);
+        response.Data = await _unitOfWork.CustomerComputerInfoRepository.Get(filter, orderBy, includeProperties);
         response.Status = true;
       }
       catch (Exception e)
@@ -37,7 +47,8 @@ namespace AS_Licence.Service.Host.CustomerComputerInfo
       return response;
     }
 
-    public OperationResponse<Entities.Model.CustomerComputerInfo.CustomerComputerInfo> SaveCustomerComputerInfo(Entities.Model.CustomerComputerInfo.CustomerComputerInfo customer)
+    public async Task<OperationResponse<Entities.Model.CustomerComputerInfo.CustomerComputerInfo>>
+      SaveCustomerComputerInfo(Entities.Model.CustomerComputerInfo.CustomerComputerInfo customer)
     {
       OperationResponse<Entities.Model.CustomerComputerInfo.CustomerComputerInfo> response = new OperationResponse<Entities.Model.CustomerComputerInfo.CustomerComputerInfo>();
 
@@ -54,28 +65,47 @@ namespace AS_Licence.Service.Host.CustomerComputerInfo
           throw new Exception(valid.GetErrorMessagesOnSingleLine());
         }
 
+        var subscriptionExists = await _subscriptionManager.GetBySubscriptionId(customer.SubscriptionId);
+        if (subscriptionExists.Status == false)
+        {
+          throw new Exception(subscriptionExists.Message);
+        }
+
+        Entities.Model.CustomerComputerInfo.CustomerComputerInfo customerExists = null;
         if (customer.CustomerComputerInfoId > 0)
         {
-          var existsCustomer = _unitOfWork.CustomerComputerInfoRepository.GetById(customer.CustomerComputerInfoId);
-          if (existsCustomer == null)
+          var existsCustomer = await _unitOfWork.CustomerComputerInfoRepository.GetById(customer.CustomerComputerInfoId);
+          customerExists = existsCustomer ?? throw new Exception("Sistemde kayıtlı bir müşteri bilgisi bulunamadı.");
+        }
+        else
+        {
+          var existsCustomer =
+            await _unitOfWork.CustomerComputerInfoRepository.GetByCustomerComputerHddAndMacAndProcessSerialCode(
+              customer.CustomerComputerInfoHddSerialCode, customer.CustomerComputerInfoMacSerialCode,
+              customer.CustomerComputerInfoProcessSerialCode);
+          if (existsCustomer != null)
           {
-            throw new Exception("Sistemde kayıtlı bir müşteri bilgisi bulunamadı.");
+            throw new Exception("HDD, Mac ve Serial bilgisine göre zaten bir kayıt mevcut. Var olan kayıt üzerinden devam ediniz.");
           }
         }
 
-        if (customer.CustomerComputerInfoId > 0)
+        if (customerExists != null)
         {
-          customer.UpdatedDateTime = DateTime.Now;
-          _unitOfWork.CustomerComputerInfoRepository.Update(customer);
+          customerExists.SubscriptionId = customerExists.SubscriptionId;
+          customerExists.CustomerComputerInfoHddSerialCode = customerExists.CustomerComputerInfoHddSerialCode;
+          customerExists.CustomerComputerInfoMacSerialCode = customerExists.CustomerComputerInfoMacSerialCode;
+          customerExists.CustomerComputerInfoProcessSerialCode = customerExists.CustomerComputerInfoProcessSerialCode;
+          customerExists.UpdatedDateTime = DateTime.Now;
+          await _unitOfWork.CustomerComputerInfoRepository.Update(customerExists);
         }
         else
         {
           customer.CreatedDateTime = DateTime.Now;
-          _unitOfWork.CustomerComputerInfoRepository.Insert(customer);
+          await _unitOfWork.CustomerComputerInfoRepository.Insert(customer);
         }
 
         response.Data = customer;
-        var responseUnitOfWork = _unitOfWork.Save();
+        var responseUnitOfWork = await _unitOfWork.Save();
         response.Status = responseUnitOfWork.Status;
         response.Message = responseUnitOfWork.Message;
       }
@@ -88,20 +118,21 @@ namespace AS_Licence.Service.Host.CustomerComputerInfo
       return response;
     }
 
-    public OperationResponse<Entities.Model.CustomerComputerInfo.CustomerComputerInfo> DeleteCustomerComputerInfoByCustomerComputerInfoId(int id)
+    public async Task<OperationResponse<Entities.Model.CustomerComputerInfo.CustomerComputerInfo>>
+      DeleteCustomerComputerInfoByCustomerComputerInfoId(int id)
     {
       OperationResponse<Entities.Model.CustomerComputerInfo.CustomerComputerInfo> response = new OperationResponse<Entities.Model.CustomerComputerInfo.CustomerComputerInfo>();
 
       try
       {
-        var existsCustomer = _unitOfWork.CustomerComputerInfoRepository.GetById(id);
+        var existsCustomer = await _unitOfWork.CustomerComputerInfoRepository.GetById(id);
         if (existsCustomer == null)
         {
           throw new Exception("Sistemde kayıtlı bir müşteri bilgisi bulunamadı.");
         }
 
-        _unitOfWork.CustomerComputerInfoRepository.Delete(existsCustomer);
-        var responseUnitOfWork = _unitOfWork.Save();
+        await _unitOfWork.CustomerComputerInfoRepository.Delete(existsCustomer);
+        var responseUnitOfWork = await _unitOfWork.Save();
         response.Status = responseUnitOfWork.Status;
         response.Message = responseUnitOfWork.Message;
       }
@@ -113,13 +144,14 @@ namespace AS_Licence.Service.Host.CustomerComputerInfo
       return response;
     }
 
-    public OperationResponse<Entities.Model.CustomerComputerInfo.CustomerComputerInfo> GetByCustomerComputerInfoId(int id)
+    public async Task<OperationResponse<Entities.Model.CustomerComputerInfo.CustomerComputerInfo>>
+      GetByCustomerComputerInfoId(int id)
     {
       OperationResponse<Entities.Model.CustomerComputerInfo.CustomerComputerInfo> response = new OperationResponse<Entities.Model.CustomerComputerInfo.CustomerComputerInfo>();
 
       try
       {
-        var existsCustomer = _unitOfWork.CustomerComputerInfoRepository.GetById(id);
+        var existsCustomer = await _unitOfWork.CustomerComputerInfoRepository.GetById(id);
         response.Data = existsCustomer ?? throw new Exception("Sistemde kayıtlı bir müşteri bilgisi bulunamadı.");
         response.Status = true;
       }
@@ -131,12 +163,13 @@ namespace AS_Licence.Service.Host.CustomerComputerInfo
       return response;
     }
 
-    public OperationResponse<List<Entities.Model.CustomerComputerInfo.CustomerComputerInfo>> GetByCustomerComputerInfoListBySubscriptionId(int SubscriptionId)
+    public async Task<OperationResponse<List<Entities.Model.CustomerComputerInfo.CustomerComputerInfo>>>
+      GetByCustomerComputerInfoListBySubscriptionId(int SubscriptionId)
     {
       OperationResponse<List<Entities.Model.CustomerComputerInfo.CustomerComputerInfo>> response = new OperationResponse<List<Entities.Model.CustomerComputerInfo.CustomerComputerInfo>>();
       try
       {
-        response.Data = _unitOfWork.CustomerComputerInfoRepository.Get(x => x.SubscriptionId == SubscriptionId, o => o.OrderBy(info => info.CreatedDateTime));
+        response.Data = await _unitOfWork.CustomerComputerInfoRepository.Get(x => x.SubscriptionId == SubscriptionId, o => o.OrderBy(info => info.CreatedDateTime));
         response.Status = true;
       }
       catch (Exception e)
@@ -147,13 +180,13 @@ namespace AS_Licence.Service.Host.CustomerComputerInfo
       return response;
     }
 
-    public OperationResponse<int> GetAlreadyComputerCountsBySubscriptionId(int subscriptionId)
+    public async Task<OperationResponse<int>> GetAlreadyComputerCountsBySubscriptionId(int subscriptionId)
     {
       OperationResponse<int> response = new OperationResponse<int>();
 
       try
       {
-        var customerComputerInfoListResult = this.GetCustomerComputerInfoList(x => x.SubscriptionId == subscriptionId);
+        var customerComputerInfoListResult = await GetCustomerComputerInfoList(x => x.SubscriptionId == subscriptionId);
         if (customerComputerInfoListResult.Status == false)
         {
           throw new Exception(customerComputerInfoListResult.Message);
@@ -170,13 +203,14 @@ namespace AS_Licence.Service.Host.CustomerComputerInfo
       return response;
     }
 
-    public OperationResponse<Entities.Model.CustomerComputerInfo.CustomerComputerInfo> GetByCustomerComputerHddAndMacAndProcessSerialCode(string hddCode, string macCode, string processCode)
+    public async Task<OperationResponse<Entities.Model.CustomerComputerInfo.CustomerComputerInfo>>
+      GetByCustomerComputerHddAndMacAndProcessSerialCode(string hddCode, string macCode, string processCode)
     {
       OperationResponse<Entities.Model.CustomerComputerInfo.CustomerComputerInfo> response = new OperationResponse<Entities.Model.CustomerComputerInfo.CustomerComputerInfo>();
 
       try
       {
-        var existsCustomer = _unitOfWork.CustomerComputerInfoRepository.GetByCustomerComputerHddAndMacAndProcessSerialCode(hddCode, macCode, processCode);
+        var existsCustomer = await _unitOfWork.CustomerComputerInfoRepository.GetByCustomerComputerHddAndMacAndProcessSerialCode(hddCode, macCode, processCode);
         response.Data = existsCustomer ?? throw new Exception("Sistemde kayıtlı bir müşteri bilgisayar bilgisi bulunamadı.");
         response.Status = true;
       }

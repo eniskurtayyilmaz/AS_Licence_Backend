@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using AS_Licence.Data.Interface.DataAccess;
 using AS_Licence.Data.Repository.Infrastracture.EntityFramework;
 using AS_Licence.Entities.Model.CustomerComputerInfo;
@@ -17,11 +18,11 @@ namespace AS_Licence.Data.Repository.Host.EntityFramework
       _context = context;
     }
 
-    public CustomerComputerInfo GetByCustomerComputerHddAndMacAndProcessSerialCode(string hddCode, string macCode,
+    public async Task<CustomerComputerInfo> GetByCustomerComputerHddAndMacAndProcessSerialCode(string hddCode, string macCode,
       string processCode)
     {
-      return this.Get(x =>x.CustomerComputerInfoHddSerialCode == hddCode && x.CustomerComputerInfoMacSerialCode ==
-        macCode && x.CustomerComputerInfoProcessSerialCode == processCode).SingleOrDefault();
+      return this.Get(x => x.CustomerComputerInfoHddSerialCode == hddCode && x.CustomerComputerInfoMacSerialCode ==
+        macCode && x.CustomerComputerInfoProcessSerialCode == processCode).Result.SingleOrDefault();
     }
   }
 }

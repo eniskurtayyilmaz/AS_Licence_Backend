@@ -1,4 +1,5 @@
-﻿using AS_Licence.Data.Interface.DataAccess;
+﻿using System.Threading.Tasks;
+using AS_Licence.Data.Interface.DataAccess;
 using AS_Licence.Entities.ViewModel.Operations;
 
 namespace AS_Licence.Data.Interface.UnitOfWork
@@ -11,6 +12,6 @@ namespace AS_Licence.Data.Interface.UnitOfWork
     ISubscriptionDal SubscriptionRepository { get; }
 
 
-    OperationResponse<string> Save();
+    Task<OperationResponse<string>> Save ();
   }
 }

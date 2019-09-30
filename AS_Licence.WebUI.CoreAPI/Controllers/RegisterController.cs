@@ -26,7 +26,7 @@ namespace AS_Licence.WebUI.CoreAPI.Controllers
       [Route("CheckLicenceStatus")]
       public async Task<IActionResult> SaveRegisterComputer([FromBody] RegisterComputer registerComputer)
       {
-        var registerComputerResult = _registerComputerManager.SaveRegisterComputer(registerComputer);
+        var registerComputerResult = await _registerComputerManager.SaveRegisterComputer(registerComputer);
         if (registerComputerResult.Status == false)
         {
           return BadRequest(registerComputerResult);

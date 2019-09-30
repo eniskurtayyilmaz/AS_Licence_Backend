@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using AS_Licence.Entites.Map.CustomerComputerInfo;
 using AS_Licence.Entites.Validation.RegisterComputer;
 using AS_Licence.Service.Interface.Customer;
@@ -30,7 +31,8 @@ namespace AS_Licence.Service.Host.RegisterComputer
       _customerComputerInfoManager = customerComputerInfoManager;
     }
 
-    public OperationResponse<Entities.ViewModel.Register.RegisterComputer> SaveRegisterComputer(Entities.ViewModel.Register.RegisterComputer registerComputer)
+    public async Task<OperationResponse<Entities.ViewModel.Register.RegisterComputer>> SaveRegisterComputer(
+      Entities.ViewModel.Register.RegisterComputer registerComputer)
     {
       OperationResponse<Entities.ViewModel.Register.RegisterComputer> response = new OperationResponse<Entities.ViewModel.Register.RegisterComputer>();
 
@@ -48,7 +50,7 @@ namespace AS_Licence.Service.Host.RegisterComputer
         }
 
         #region Yazılım adını kontrol et ve aktif mi kontrol et?
-        var softwareExistsResult = _softwareManager.GetBySoftwareName(registerComputer.SoftwareName);
+        var softwareExistsResult = await _softwareManager.GetBySoftwareName(registerComputer.SoftwareName);
         if (softwareExistsResult.Status == false)
         {
           throw new Exception(softwareExistsResult.Message);
@@ -63,7 +65,7 @@ namespace AS_Licence.Service.Host.RegisterComputer
 
 
         #region Müşteriyi kontrol et ve aktif mi kontrol et?
-        var customerExistsResult = _customerManager.GetCustomerByEmail(registerComputer.CustomerEMail);
+        var customerExistsResult = await _customerManager.GetCustomerByEmail(registerComputer.CustomerEMail);
         if (customerExistsResult.Status == false)
         {
           throw new Exception(customerExistsResult.Message);
@@ -76,7 +78,7 @@ namespace AS_Licence.Service.Host.RegisterComputer
         #endregion
 
         //Subscription durumunu önce kontrol et
-        var subscriptionExistsResult =
+        var subscriptionExistsResult = await
           _subscriptionManager.GetBySubscriptionStatusBySoftwareIdAndCustomerId(softwareExistsResult.Data.SoftwareId,
             customerExistsResult.Data.CustomerId);
         if (subscriptionExistsResult.Status == false)
@@ -90,7 +92,7 @@ namespace AS_Licence.Service.Host.RegisterComputer
         }
 
         //Lisans hakkı var ise gönderdiği HDD, MAC, Process bilgisi ile zaten o bilgisayar mı onu kontrol et
-        var customerComputerInfoExists =
+        var customerComputerInfoExists = await
           _customerComputerInfoManager.GetByCustomerComputerHddAndMacAndProcessSerialCode(
             registerComputer.ComputerInfoHddSerialCode, registerComputer.ComputerInfoMacSerialCode,
             registerComputer.ComputerInfoProcessSerialCode);
@@ -101,7 +103,7 @@ namespace AS_Licence.Service.Host.RegisterComputer
           return response;
         }
 
-        var alreadyComputerCountsResult = _customerComputerInfoManager.GetAlreadyComputerCountsBySubscriptionId(subscriptionExistsResult.Data.SubscriptionId);
+        var alreadyComputerCountsResult = await _customerComputerInfoManager.GetAlreadyComputerCountsBySubscriptionId(subscriptionExistsResult.Data.SubscriptionId);
         if (alreadyComputerCountsResult.Status == false)
         {
           throw new Exception(alreadyComputerCountsResult.Message);
@@ -115,7 +117,7 @@ namespace AS_Licence.Service.Host.RegisterComputer
 
 
         //Demek ki hala kayıt edebilme hakkı var.
-        var saveCustomerComputerInfo = _customerComputerInfoManager.SaveCustomerComputerInfo(registerComputer.MapRegisterComputerToCustomerComputerInfo(subscriptionExistsResult.Data.SubscriptionId));
+        var saveCustomerComputerInfo = await _customerComputerInfoManager.SaveCustomerComputerInfo(registerComputer.MapRegisterComputerToCustomerComputerInfo(subscriptionExistsResult.Data.SubscriptionId));
         if (saveCustomerComputerInfo.Status == false)
         {
           throw new Exception(saveCustomerComputerInfo.Message);

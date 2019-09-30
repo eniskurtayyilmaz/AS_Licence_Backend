@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using AS_Licence.Data.Interface.UnitOfWork;
 using AS_Licence.Data.Repository.Host.EntityFramework;
 using AS_Licence.Data.Repository.UnitOfWork.EntityFramework;
@@ -35,20 +36,20 @@ namespace AS_Licence.UnitOfWorkTests
 
       _unitOfWork = new EfUnitOfWork(context);
 
-      _subscriptionManager = new SubscriptionService(_unitOfWork);
-      _softwareManager = new SoftwareService(_unitOfWork, _subscriptionManager);
       _customerManager = new CustomerService(_unitOfWork);
+      _softwareManager = new SoftwareService(_unitOfWork);
+      _subscriptionManager = new SubscriptionService(_unitOfWork, _softwareManager);
     }
     [Fact]
-    public void Can_Add_Subscription_Thought_UnitOfWork()
+    public async Task Can_Add_Subscription_Thought_UnitOfWork()
     {
       //Arrange
       var customer = new Customer() { CustomerEMail = "aliveli@hotmail.com", CustomerIsActive = true, CustomerName = "Adý soyadý", CustomerPhone = "123123" };
-      var customerResult = _customerManager.SaveCustomer(customer);
+      var customerResult = await _customerManager.SaveCustomer(customer);
       Assert.True(customerResult.Status);
 
       var software = new Software() { SoftwareLastVersion = "v123", SoftwareName = "twitter", SoftwareIsActive = true, };
-      var softwareResult = _softwareManager.SaveSoftware(software);
+      var softwareResult = await _softwareManager.SaveSoftware(software);
       Assert.True(softwareResult.Status);
 
       var subscription = new Subscription()
@@ -62,7 +63,7 @@ namespace AS_Licence.UnitOfWorkTests
       };
 
       //Action
-      var result = _subscriptionManager.SaveSubscription(subscription);
+      var result = await _subscriptionManager.SaveSubscription(subscription);
 
       //Asserts
       if (result.Status == false)
@@ -73,23 +74,23 @@ namespace AS_Licence.UnitOfWorkTests
       Assert.True(result.Status);
       Assert.True(subscription.SubscriptionId > 0);
 
-      Can_Delete_Exists_Subscription_Thought_UnitOfWork(subscription.SubscriptionId);
+      await Can_Delete_Exists_Subscription_Thought_UnitOfWork(subscription.SubscriptionId);
 
-      var customerDeleteResult = _customerManager.DeleteCustomerByCustomerId(customer.CustomerId);
+      var customerDeleteResult = await _customerManager.DeleteCustomerByCustomerId(customer.CustomerId);
       Assert.True(customerDeleteResult.Status);
 
-      var softwareDeleteResult = _softwareManager.DeleteSoftwareBySoftwareId(software.SoftwareId);
+      var softwareDeleteResult = await _softwareManager.DeleteSoftwareBySoftwareId(software.SoftwareId);
       Assert.True(softwareDeleteResult.Status);
     }
 
 
-    private void Can_Delete_Exists_Subscription_Thought_UnitOfWork(int subscriptionId)
+    private async Task Can_Delete_Exists_Subscription_Thought_UnitOfWork(int subscriptionId)
     {
       //Arrange
 
 
       //Action
-      var result = _subscriptionManager.DeleteSubscriptionBySubscriptionId(subscriptionId);
+      var result = await _subscriptionManager.DeleteSubscriptionBySubscriptionId(subscriptionId);
 
       //Asserts
       if (result.Status == false)

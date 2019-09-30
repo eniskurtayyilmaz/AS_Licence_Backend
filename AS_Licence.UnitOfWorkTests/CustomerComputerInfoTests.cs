@@ -1,7 +1,9 @@
 using AS_Licence.Data.Repository.Host.EntityFramework;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Threading.Tasks;
 using AS_Licence.Data.Interface.DataAccess;
 using AS_Licence.Data.Repository.UnitOfWork.EntityFramework;
 using Xunit;
@@ -41,25 +43,27 @@ namespace AS_Licence.UnitOfWorkTests
 
       _unitOfWork = new EfUnitOfWork(context);
 
-      _subscriptionManager = new SubscriptionService(_unitOfWork);
-      _softwareManager = new SoftwareService(_unitOfWork, _subscriptionManager);
       _customerManager = new CustomerService(_unitOfWork);
-      _customerComputerInfoManager = new CustomerComputerInfoService(_unitOfWork);
+      _softwareManager = new SoftwareService(_unitOfWork);
+      _subscriptionManager = new SubscriptionService(_unitOfWork, _softwareManager);
+      _customerComputerInfoManager = new CustomerComputerInfoService(_unitOfWork, _subscriptionManager);
+
+
     }
     [Fact]
-    public void Can_Add_Subscription_Thought_UnitOfWork()
+    public async Task Can_Add_Subscription_Thought_UnitOfWork()
     {
       //Arrange
       var customer = new Customer() { CustomerEMail = "aliveli@hotmail.com", CustomerIsActive = true, CustomerName = "Adý soyadý", CustomerPhone = "123123" };
-      var customerResult = _customerManager.SaveCustomer(customer);
+      var customerResult = await _customerManager.SaveCustomer(customer);
       Assert.True(customerResult.Status);
 
       var software = new Software() { SoftwareLastVersion = "v123", SoftwareName = "twitter", SoftwareIsActive = true, };
-      var softwareResult = _softwareManager.SaveSoftware(software);
+      var softwareResult = await _softwareManager.SaveSoftware(software);
       Assert.True(softwareResult.Status);
 
       var subscription = new Subscription() { CustomerId = customer.CustomerId, SoftwareId = software.SoftwareId, SubscriptionId = 0, SubScriptionEndDate = DateTime.Now.AddDays(2), SubScriptionLicenceCount = 2, SubScriptionStartDate = DateTime.Now, };
-      var subscriptionResult = _subscriptionManager.SaveSubscription(subscription);
+      var subscriptionResult = await _subscriptionManager.SaveSubscription(subscription);
       Assert.True(subscriptionResult.Status);
 
       var customerComputerInfo = new CustomerComputerInfo()
@@ -72,7 +76,7 @@ namespace AS_Licence.UnitOfWorkTests
       };
 
       //Action
-      var result = _customerComputerInfoManager.SaveCustomerComputerInfo(customerComputerInfo);
+      var result = await _customerComputerInfoManager.SaveCustomerComputerInfo(customerComputerInfo);
 
       //Asserts
       if (result.Status == false)
@@ -83,28 +87,28 @@ namespace AS_Licence.UnitOfWorkTests
       Assert.True(result.Status);
       Assert.True(customerComputerInfo.CustomerComputerInfoId > 0);
 
-      Can_Delete_Exists_CustomerComputerInfo_Thought_UnitOfWork(customerComputerInfo.CustomerComputerInfoId);
+      await Can_Delete_Exists_CustomerComputerInfo_Thought_UnitOfWork(customerComputerInfo.CustomerComputerInfoId);
 
-      var customerDeleteResult = _customerManager.DeleteCustomerByCustomerId(customer.CustomerId);
+      var customerDeleteResult = await _customerManager.DeleteCustomerByCustomerId(customer.CustomerId);
       Assert.True(customerDeleteResult.Status);
 
-      var subscriptionDeleteResult = _subscriptionManager.DeleteSubscriptionBySubscriptionId(subscription.SubscriptionId);
+      var subscriptionDeleteResult = await _subscriptionManager.DeleteSubscriptionBySubscriptionId(subscription.SubscriptionId);
       Assert.True(subscriptionDeleteResult.Status);
 
-      var softwareDeleteResult = _softwareManager.DeleteSoftwareBySoftwareId(software.SoftwareId);
+      var softwareDeleteResult = await _softwareManager.DeleteSoftwareBySoftwareId(software.SoftwareId);
       Assert.True(softwareDeleteResult.Status);
 
-     
+
     }
 
 
-    private void Can_Delete_Exists_CustomerComputerInfo_Thought_UnitOfWork(int customerComputerInfoId)
+    private async Task Can_Delete_Exists_CustomerComputerInfo_Thought_UnitOfWork(int customerComputerInfoId)
     {
       //Arrange
 
 
       //Action
-      var result = _customerComputerInfoManager.DeleteCustomerComputerInfoByCustomerComputerInfoId(customerComputerInfoId);
+      var result = await _customerComputerInfoManager.DeleteCustomerComputerInfoByCustomerComputerInfoId(customerComputerInfoId);
 
       //Asserts
       if (result.Status == false)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Threading.Tasks;
 using System.Transactions;
 using AS_Licence.Data.Interface.DataAccess;
 using AS_Licence.Data.Interface.UnitOfWork;
@@ -78,14 +79,14 @@ namespace AS_Licence.Data.Repository.UnitOfWork.EntityFramework
     }
 
     //TODO: Logging için helper yazılacak ve buraya try catch içine eklenecek.
-    public OperationResponse<string> Save()
+    public async Task<OperationResponse<string>> Save()
     {
       OperationResponse<string> response = new OperationResponse<string>();
       try
       {
-        using (TransactionScope scope = new TransactionScope())
+        using (TransactionScope scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
         {
-          this._context.SaveChanges();
+          await this._context.SaveChangesAsync();
           scope.Complete();
           response.Status = true;
           response.Message = "İşlem başarılı";

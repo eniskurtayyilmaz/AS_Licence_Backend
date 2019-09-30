@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Threading.Tasks;
 
 namespace AS_Licence.Entities.Model.Customer
 {
@@ -17,7 +18,10 @@ namespace AS_Licence.Entities.Model.Customer
     public bool CustomerIsActive { get; set; }
     public DateTime? CreatedDateTime { get; set; }
     public DateTime? UpdatedDateTime { get; set; }
-    
 
+    public static implicit operator Task<object>(Customer v)
+    {
+      throw new NotImplementedException();
+    }
   }
 }
