@@ -4,7 +4,7 @@ using System.Data;
 using System.Text;
 using FluentValidation;
 
-namespace AS_Licence.Entites.Validation.Customer
+namespace AS_Licence.Entites.Validation.Entity.Customer
 {
   public class CustomerValidator : AbstractValidator<Entities.Model.Customer.Customer>
   {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using FluentValidation;
 
-namespace AS_Licence.Entites.Validation.Subscription
+namespace AS_Licence.Entites.Validation.Entity.Subscription
 {
   public class SubscriptionValidator : AbstractValidator<Entities.Model.Subscription.Subscription>
   {

@@ -10,6 +10,7 @@ namespace AS_Licence.Data.Interface.UnitOfWork
     ICustomerComputerInfoDal CustomerComputerInfoRepository { get; }
     ISoftwareDal SoftwareRepository { get; }
     ISubscriptionDal SubscriptionRepository { get; }
+    IAuthDal AuthRepository { get; }
 
 
     Task<OperationResponse<string>> Save ();

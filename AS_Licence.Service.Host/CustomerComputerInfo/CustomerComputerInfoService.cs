@@ -1,16 +1,14 @@
 ﻿using AS_Licence.Data.Interface.UnitOfWork;
-using AS_Licence.Entites.Validation.Customer;
+using AS_Licence.Entites.Validation.Entity.CustomerComputerInfo;
 using AS_Licence.Entities.ViewModel.Operations;
 using AS_Licence.Helpers.Extension;
 using AS_Licence.Service.Interface.Customer;
+using AS_Licence.Service.Interface.Subscription;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using AS_Licence.Entites.Validation.CustomerComputerInfo;
-using AS_Licence.Service.Interface.Software;
-using AS_Licence.Service.Interface.Subscription;
 
 namespace AS_Licence.Service.Host.CustomerComputerInfo
 {
@@ -59,7 +57,7 @@ namespace AS_Licence.Service.Host.CustomerComputerInfo
           throw new Exception("Customer nesnesi null olamaz");
         }
 
-        var valid = new CustomerComputerInfoValidator().Validate(customer);
+        var valid = await new CustomerComputerInfoValidator().ValidateAsync(customer);
         if (valid.IsValid == false)
         {
           throw new Exception(valid.GetErrorMessagesOnSingleLine());

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using AS_Licence.Entites.Validation.CustomerComputerInfo;
-using AS_Licence.Entites.Validation.Software;
+using AS_Licence.Entites.Validation.Entity.CustomerComputerInfo;
+using AS_Licence.Entites.Validation.Entity.Software;
 using AS_Licence.Entities.Model.CustomerComputerInfo;
 using AS_Licence.Entities.Model.Software;
 using Xunit;

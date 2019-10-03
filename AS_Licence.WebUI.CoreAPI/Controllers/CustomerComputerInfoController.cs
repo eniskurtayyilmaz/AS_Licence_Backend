@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AS_Licence.Entities.Model.CustomerComputerInfo;
 using AS_Licence.Service.Interface.Customer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,7 +12,7 @@ namespace AS_Licence.WebUI.CoreAPI.Controllers
 {
   [Route("api/[controller]")]
   [ApiController]
-  //TODO: AUTH Yazılacak.
+  [Authorize]
   public class CustomerComputerInfoController : ControllerBase
   {
     private ICustomerComputerInfoManager _customerComputerInfoManager;

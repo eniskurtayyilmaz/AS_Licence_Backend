@@ -4,14 +4,16 @@ using AS_Licence.Data.Repository.Host.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AS_Licence.WebUI.CoreAPI.Migrations
 {
     [DbContext(typeof(EfAsLicenceContext))]
-    partial class EfAsLicenceContextModelSnapshot : ModelSnapshot
+    [Migration("20191003081033_AddedUser")]
+    partial class AddedUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

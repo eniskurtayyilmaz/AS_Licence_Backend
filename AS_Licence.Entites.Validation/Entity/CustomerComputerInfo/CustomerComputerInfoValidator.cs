@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using FluentValidation;
 
-namespace AS_Licence.Entites.Validation.CustomerComputerInfo
+namespace AS_Licence.Entites.Validation.Entity.CustomerComputerInfo
 {
   public class CustomerComputerInfoValidator : AbstractValidator<Entities.Model.CustomerComputerInfo.CustomerComputerInfo>
   {

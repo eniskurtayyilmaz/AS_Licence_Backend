@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AS_Licence.Entites.Dto\AS_Licence.Entites.Dto.csproj" />
     <ProjectReference Include="..\AS_Licence.Entities.Model\AS_Licence.Entities.Model.csproj" />
     <ProjectReference Include="..\AS_Licence.Entities.ViewModel\AS_Licence.Entities.ViewModel.csproj" />
   </ItemGroup>

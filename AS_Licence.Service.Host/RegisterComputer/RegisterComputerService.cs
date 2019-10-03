@@ -9,7 +9,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AS_Licence.Entites.Map.CustomerComputerInfo;
-using AS_Licence.Entites.Validation.RegisterComputer;
+using AS_Licence.Entites.Validation.Entity.RegisterComputer;
 using AS_Licence.Service.Interface.Customer;
 using AS_Licence.Service.Interface.Software;
 
@@ -43,7 +43,7 @@ namespace AS_Licence.Service.Host.RegisterComputer
           throw new Exception("RegisterComputer nesnesi null olamaz");
         }
 
-        var valid = new RegisterComputerValidator().Validate(registerComputer);
+        var valid = await new RegisterComputerValidator().ValidateAsync(registerComputer);
         if (valid.IsValid == false)
         {
           throw new Exception(valid.GetErrorMessagesOnSingleLine());

@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using AS_Licence.Data.Interface.UnitOfWork;
-using AS_Licence.Entites.Validation.Subscription;
+using AS_Licence.Entites.Validation.Entity.Subscription;
 using AS_Licence.Entities.ViewModel.Operations;
 using AS_Licence.Helpers.Extension;
 using AS_Licence.Service.Host.Customer;
@@ -64,7 +64,7 @@ namespace AS_Licence.Service.Host.Subscription
           throw new Exception("Subscription nesnesi null olamaz");
         }
 
-        var valid = new SubscriptionValidator().Validate(subscription);
+        var valid = await new SubscriptionValidator().ValidateAsync(subscription);
         if (valid.IsValid == false)
         {
           throw new Exception(valid.GetErrorMessagesOnSingleLine());

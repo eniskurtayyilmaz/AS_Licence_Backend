@@ -4,14 +4,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using AS_Licence.Entities.Model.Software;
 using AS_Licence.Service.Interface.Software;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AS_Licence.WebUI.CoreAPI.Controllers
 {
-  //TODO:Auth ekle.
   [Route("api/[controller]")]
   [ApiController]
+  [Authorize]
   public class SoftwareController : ControllerBase
   {
     
@@ -23,6 +24,7 @@ namespace AS_Licence.WebUI.CoreAPI.Controllers
 
     [HttpGet]
     [Route("GetSoftwareLists")]
+    [AllowAnonymous]
     public async Task<IActionResult> Get()
     {
       var softwareResult = await _softwareManager.GetSoftwareList();

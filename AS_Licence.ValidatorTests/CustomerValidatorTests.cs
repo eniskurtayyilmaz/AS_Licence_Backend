@@ -1,4 +1,4 @@
-﻿using AS_Licence.Entites.Validation.Customer;
+﻿using AS_Licence.Entites.Validation.Entity.Customer;
 using AS_Licence.Entities.Model.Customer;
 using Xunit;
 using Xunit.Abstractions;

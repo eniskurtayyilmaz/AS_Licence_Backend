@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using FluentValidation;
 
-namespace AS_Licence.Entites.Validation.RegisterComputer
+namespace AS_Licence.Entites.Validation.Entity.RegisterComputer
 {
   public class RegisterComputerValidator : AbstractValidator<Entities.ViewModel.Register.RegisterComputer>
   {

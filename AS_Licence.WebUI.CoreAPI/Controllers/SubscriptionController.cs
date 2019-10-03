@@ -2,34 +2,35 @@
 using AS_Licence.Service.Interface.Subscription;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AS_Licence.WebUI.CoreAPI.Controllers
 {
   [Route("api/[controller]")]
-    [ApiController]
-    //TODO: Auth yazılacak
-    public class SubscriptionController : ControllerBase
+  [ApiController]
+  [Authorize]
+  public class SubscriptionController : ControllerBase
+  {
+    private ISubscriptionManager _subscriptionManager;
+
+    public SubscriptionController(ISubscriptionManager subscriptionManager)
     {
-      private ISubscriptionManager _subscriptionManager;
+      _subscriptionManager = subscriptionManager;
+    }
 
-      public SubscriptionController(ISubscriptionManager subscriptionManager)
+
+    [HttpPost]
+    [Route("SaveSubscription")]
+    public async Task<IActionResult> Post([FromBody] Subscription subscription)
+    {
+      var subscriptionResult = await _subscriptionManager.SaveSubscription(subscription);
+      if (subscriptionResult.Status == false)
       {
-        _subscriptionManager = subscriptionManager;
+        return BadRequest(subscriptionResult);
       }
 
-
-      [HttpPost]
-      [Route("SaveSubscription")]
-      public async Task<IActionResult> Post([FromBody] Subscription subscription)
-      {
-        var subscriptionResult = await _subscriptionManager.SaveSubscription(subscription);
-        if (subscriptionResult.Status == false)
-        {
-          return BadRequest(subscriptionResult);
-        }
-
-        return Ok(subscriptionResult);
-      }
+      return Ok(subscriptionResult);
+    }
 
   }
 }

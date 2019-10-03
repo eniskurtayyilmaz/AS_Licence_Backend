@@ -1,4 +1,4 @@
-﻿using AS_Licence.Entites.Validation.CustomerComputerInfo;
+﻿using AS_Licence.Entites.Validation.Entity.CustomerComputerInfo;
 using AS_Licence.Entities.Model.CustomerComputerInfo;
 using Xunit;
 using Xunit.Abstractions;

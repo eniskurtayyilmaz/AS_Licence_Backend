@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using AS_Licence.Data.Interface.UnitOfWork;
-using AS_Licence.Entites.Validation.Software;
+using AS_Licence.Entites.Validation.Entity.Software;
 using AS_Licence.Entities.ViewModel.Operations;
 using AS_Licence.Helpers.Extension;
 using AS_Licence.Service.Host.Subscription;
@@ -60,7 +60,7 @@ namespace AS_Licence.Service.Host.Software
           throw new Exception("Software nesnesi null olamaz");
         }
 
-        var valid = new SoftwareValidator().Validate(software);
+        var valid = await new SoftwareValidator().ValidateAsync(software);
         if (valid.IsValid == false)
         {
           throw new Exception(valid.GetErrorMessagesOnSingleLine());

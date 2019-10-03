@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using AS_Licence.Data.Interface.UnitOfWork;
-using AS_Licence.Entites.Validation.Customer;
+﻿using AS_Licence.Data.Interface.UnitOfWork;
+using AS_Licence.Entites.Validation.Entity.Customer;
 using AS_Licence.Entities.ViewModel.Operations;
 using AS_Licence.Helpers.Extension;
 using AS_Licence.Service.Interface.Customer;
-using FluentValidation.Results;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace AS_Licence.Service.Host.Customer
 {
@@ -56,7 +54,7 @@ namespace AS_Licence.Service.Host.Customer
           throw new Exception("Customer nesnesi null olamaz");
         }
 
-        var valid = new CustomerValidator().Validate(customer);
+        var valid = await new CustomerValidator().ValidateAsync(customer);
         if (valid.IsValid == false)
         {
           throw new Exception(valid.GetErrorMessagesOnSingleLine());

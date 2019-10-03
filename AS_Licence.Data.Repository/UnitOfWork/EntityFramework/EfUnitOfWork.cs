@@ -18,6 +18,7 @@ namespace AS_Licence.Data.Repository.UnitOfWork.EntityFramework
     private ICustomerComputerInfoDal _customerComputerInfoRepository;
     private ISoftwareDal _softwareRepository;
     private ISubscriptionDal _subscriptionRepository;
+    private IAuthDal _authRepository;
 
 
     public EfUnitOfWork(EfAsLicenceContext context)
@@ -75,6 +76,19 @@ namespace AS_Licence.Data.Repository.UnitOfWork.EntityFramework
         }
 
         return _subscriptionRepository;
+      }
+    }
+
+    public IAuthDal AuthRepository
+    {
+      get
+      {
+        if (_authRepository == null)
+        {
+          _authRepository = new EfAuthDal(_context);
+        }
+
+        return _authRepository;
       }
     }
 

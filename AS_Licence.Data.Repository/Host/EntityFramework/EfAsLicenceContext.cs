@@ -5,6 +5,7 @@ using AS_Licence.Entities.Model.Customer;
 using AS_Licence.Entities.Model.CustomerComputerInfo;
 using AS_Licence.Entities.Model.Software;
 using AS_Licence.Entities.Model.Subscription;
+using AS_Licence.Entities.Model.User;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 
@@ -34,6 +35,7 @@ namespace AS_Licence.Data.Repository.Host.EntityFramework
     public virtual DbSet<CustomerComputerInfo> CustomerComputerInfos { get; set; }
     public virtual DbSet<Software> Softwares { get; set; }
     public virtual DbSet<Subscription> Subscriptions { get; set; }
+    public virtual DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
