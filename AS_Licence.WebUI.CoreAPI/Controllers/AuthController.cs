@@ -21,7 +21,7 @@ namespace AS_Licence.WebUI.CoreAPI.Controllers
 {
   [Route("api/[controller]")]
   [ApiController]
-  [AllowAnonymous]
+
   public class AuthController : ControllerBase
   {
     private readonly IUserManager _userManager;
@@ -32,6 +32,7 @@ namespace AS_Licence.WebUI.CoreAPI.Controllers
       _configuration = configuration;
     }
 
+    [Authorize]
     [HttpPost("Register")]
     public async Task<IActionResult> Register([FromBody] UserForRegisterDto userForRegisterDto)
     {
@@ -71,6 +72,7 @@ namespace AS_Licence.WebUI.CoreAPI.Controllers
       return Ok(createdUser);
     }
 
+    [AllowAnonymous]
     [HttpPost("Login")]
     public async Task<IActionResult> Login(UserForLoginDto userForLoginDto)
     {

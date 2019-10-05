@@ -31,6 +31,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Swagger;
+using Swashbuckle.AspNetCore.SwaggerUI;
 
 namespace AS_Licence.WebUI.CoreAPI
 {
@@ -50,15 +51,12 @@ namespace AS_Licence.WebUI.CoreAPI
       services.AddSwaggerGen(c =>
       {
         c.SwaggerDoc("v1", new Info { Title = "AS_Licence API", Version = "v1" });
+        
       });
 
 
       services.AddDbContext<EfAsLicenceContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"], b => b.MigrationsAssembly("AS_Licence.WebUI.CoreAPI")));
       services.AddTransient<IUnitOfWork, EfUnitOfWork>();
-      /*
-    private readonly ICustomerManager _customerManager;
-    */
-
       services.AddTransient<ICustomerManager, CustomerService>();
       services.AddTransient<ICustomerComputerInfoManager, CustomerComputerInfoService>();
       services.AddTransient<ISubscriptionManager, SubscriptionService>();
@@ -115,15 +113,22 @@ namespace AS_Licence.WebUI.CoreAPI
 
       app.UseCors(x => x.AllowAnyOrigin().AllowAnyOrigin().AllowAnyHeader());
 
-
+      app.UseAuthentication();
       app.UseMvcWithDefaultRoute();
 
 
-
-      app.UseSwagger();
+      app.UseSwagger(c =>
+      {
+        c.PreSerializeFilters.Add((doc, requset) =>
+        {
+          var root = $"{requset.Host.Value}";
+          doc.Host = root;
+        });
+      });
       app.UseSwaggerUI(c =>
       {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "AS_Licence API");
+
       });
     }
   }
