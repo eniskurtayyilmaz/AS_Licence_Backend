@@ -126,16 +126,13 @@ namespace AS_Licence.Helpers.EncryptionUI
           */
         }
       }
-      catch (HttpRequestException ex)
-      {
-        result = ex.Message;
-
-      }
       catch (Exception ex)
       {
         Console.WriteLine(ex);
-        result = ex.Message;
+        result = ex.Message + "Burada patlıyor 3";
       }
+
+      
 
       if (!string.IsNullOrEmpty(result))
       {
@@ -148,7 +145,7 @@ namespace AS_Licence.Helpers.EncryptionUI
         catch (Exception e)
         {
           Console.WriteLine(e);
-          result = e.Message;
+          result = e.Message + " Burada patlıyor" + result + postData;
         }
       }
 
