@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AS_Licence.Data.Interface.UnitOfWork;
 using AS_Licence.Data.Repository.Host.EntityFramework;
 using AS_Licence.Data.Repository.UnitOfWork.EntityFramework;
+using AS_Licence.Helpers.Encryption;
 using AS_Licence.Service.Host.Customer;
 using AS_Licence.Service.Host.CustomerComputerInfo;
 using AS_Licence.Service.Host.RegisterComputer;
@@ -42,7 +43,7 @@ namespace AS_Licence.WebUI.CoreAPI
       Configuration = configuration;
     }
 
-    public IConfiguration Configuration { get; }
+    public IConfiguration Configuration;
 
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
@@ -51,11 +52,29 @@ namespace AS_Licence.WebUI.CoreAPI
       services.AddSwaggerGen(c =>
       {
         c.SwaggerDoc("v1", new Info { Title = "AS_Licence API", Version = "v1" });
-        
+
+
+        var security = new Dictionary<string, IEnumerable<string>>
+        {
+          {"Bearer", new string[] { }},
+        };
+
+        c.AddSecurityDefinition("Bearer", new ApiKeyScheme
+        {
+          Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+          Name = "Authorization",
+          In = "header",
+          Type = "apiKey"
+        });
+        c.AddSecurityRequirement(security);
+
       });
 
+      string connectionString = Configuration.GetConnectionString("DefaultConnection");
+      // services.AddDbContext<EfAsLicenceContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"], b => b.MigrationsAssembly("AS_Licence.WebUI.CoreAPI")));
 
-      services.AddDbContext<EfAsLicenceContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"], b => b.MigrationsAssembly("AS_Licence.WebUI.CoreAPI")));
+      services.AddDbContext<EfAsLicenceContext>(options => options.UseSqlServer(connectionString, b => b.MigrationsAssembly("AS_Licence.WebUI.CoreAPI")));
+
       services.AddTransient<IUnitOfWork, EfUnitOfWork>();
       services.AddTransient<ICustomerManager, CustomerService>();
       services.AddTransient<ICustomerComputerInfoManager, CustomerComputerInfoService>();
@@ -63,7 +82,7 @@ namespace AS_Licence.WebUI.CoreAPI
       services.AddTransient<ISoftwareManager, SoftwareService>();
       services.AddTransient<IRegisterComputerManager, RegisterComputerService>();
       services.AddScoped<IUserManager, UserService>();
-
+      services.AddTransient<EncryptionHelper>();
 
       services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(
         options =>
@@ -85,6 +104,7 @@ namespace AS_Licence.WebUI.CoreAPI
       if (env.IsDevelopment())
       {
         app.UseDeveloperExceptionPage();
+
       }
 
       //Error handling
@@ -92,7 +112,7 @@ namespace AS_Licence.WebUI.CoreAPI
       {
         builder.Run(async context =>
         {
-          context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+          context.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
 
           var error = context.Features.Get<IExceptionHandlerFeature>();
 
@@ -100,12 +120,13 @@ namespace AS_Licence.WebUI.CoreAPI
           if (error != null)
           {
             //Error Content from Exception.Message
-            errorMessage = error.Error.Message;
+            errorMessage = error.Error.Message; // + $"CoonectionString = {Configuration.GetConnectionString("DefaultConnection")}";
           }
           else
           {
             errorMessage = "Something wrong that we do not know";
           }
+
           context.Response.AddApplicationError(errorMessage);
           await context.Response.WriteAsync(errorMessage);
         });
@@ -128,8 +149,9 @@ namespace AS_Licence.WebUI.CoreAPI
       app.UseSwaggerUI(c =>
       {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "AS_Licence API");
-
+        c.DocExpansion(DocExpansion.None);
       });
     }
+
   }
 }

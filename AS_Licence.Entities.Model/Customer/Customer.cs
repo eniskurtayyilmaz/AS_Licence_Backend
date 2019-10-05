@@ -19,9 +19,5 @@ namespace AS_Licence.Entities.Model.Customer
     public DateTime? CreatedDateTime { get; set; }
     public DateTime? UpdatedDateTime { get; set; }
 
-    public static implicit operator Task<object>(Customer v)
-    {
-      throw new NotImplementedException();
-    }
   }
 }

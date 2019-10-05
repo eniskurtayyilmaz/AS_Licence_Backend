@@ -32,5 +32,18 @@ namespace AS_Licence.WebUI.CoreAPI.Controllers
       return Ok(subscriptionResult);
     }
 
+    [HttpPost]
+    [Route("GetSubscriptionListByCustomerId")]
+    public async Task<IActionResult> Post(int customerId)
+    {
+      var subscriptionResult = await _subscriptionManager.GetSubscriptionListByCustomerId(customerId);
+      if (subscriptionResult.Status == false)
+      {
+        return BadRequest(subscriptionResult);
+      }
+
+      return Ok(subscriptionResult);
+    }
+
   }
 }

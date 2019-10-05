@@ -43,6 +43,7 @@ namespace AS_Licence.Data.Repository.Host.EntityFramework
       {
         optionsBuilder.UseSqlServer(
           "Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=AS_LICENCE;Data Source=.");
+      
       }
     }
   }
