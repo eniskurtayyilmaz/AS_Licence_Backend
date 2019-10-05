@@ -89,6 +89,73 @@ namespace AS_Licence.Helpers.EncryptionUI
 
 
     }
+    public async Task<string> GetRegisterRequestResponseAsString(RegisterComputer registerComputer)
+    {
+
+      string url = this.LisansAdresi + "/api/Register/CheckLicenceStatus";
+
+      string result = "";
+
+      string postData = JsonConvert.SerializeObject(registerComputer);
+      try
+      {
+
+        using (var client = new System.Net.Http.HttpClient())
+        {
+          var uri = new Uri(url);
+          string contents = JsonConvert.SerializeObject(registerComputer);
+          var response = client.PostAsync(uri, new StringContent(contents, Encoding.UTF8, "application/json"));
+          response.Wait();
+
+          Stream receiveStream = await response.Result.Content.ReadAsStreamAsync();
+          StreamReader readStream = new StreamReader(receiveStream, Encoding.UTF8);
+          result = readStream.ReadToEnd();
+          /*
+          if (response.Result.IsSuccessStatusCode)
+          {
+            Stream receiveStream = await response.Result.Content.ReadAsStreamAsync();
+            StreamReader readStream = new StreamReader(receiveStream, Encoding.UTF8);
+            result = readStream.ReadToEnd();
+          }
+          else
+          {
+            Stream receiveStream = await response.Result.Content.ReadAsStreamAsync();
+            StreamReader readStream = new StreamReader(receiveStream, Encoding.UTF8);
+            result  = readStream.ReadToEnd();
+          }
+          */
+        }
+      }
+      catch (HttpRequestException ex)
+      {
+        result = ex.Message;
+
+      }
+      catch (Exception ex)
+      {
+        Console.WriteLine(ex);
+        result = ex.Message;
+      }
+
+      if (!string.IsNullOrEmpty(result))
+      {
+        try
+        {
+          result = new EncryptionHelper<object>().DecryptStringAsString(result);
+
+
+        }
+        catch (Exception e)
+        {
+          Console.WriteLine(e);
+          result = e.Message;
+        }
+      }
+
+      return result;
+
+
+    }
   }
 
   internal static class HardwareInfo
@@ -125,9 +192,9 @@ namespace AS_Licence.Helpers.EncryptionUI
 
         foreach (ManagementObject obj in mObject)
         {
-          if (obj["SerialNumber"] != null)
+          if (obj["Size"] != null)
           {
-            hddID = obj["SerialNumber"].ToString().Trim();
+            hddID = obj["Size"].ToString().Trim();
             break;
           }
         }
@@ -137,6 +204,29 @@ namespace AS_Licence.Helpers.EncryptionUI
       {
         Console.WriteLine(ex);
       }
+
+      try
+      {
+        if (string.IsNullOrEmpty(hddID) || string.IsNullOrWhiteSpace(hddID))
+        {
+          ManagementObjectSearcher searcher = new ManagementObjectSearcher("Select * FROM Win32_DiskDrive");
+          ManagementObjectCollection mObject = searcher.Get();
+
+          foreach (ManagementObject obj in mObject)
+          {
+            if (obj["Size"] != null)
+            {
+              hddID = obj["Size"].ToString().Trim();
+              break;
+            }
+          }
+        }
+      }
+      catch (Exception e)
+      {
+        Console.WriteLine(e);
+      }
+
       return hddID;
     }
 
@@ -230,6 +320,25 @@ namespace AS_Licence.Helpers.EncryptionUI
       cryptoStream.Close();
       string json = Encoding.UTF8.GetString(plainTextBytes, 0, decryptedByteCount);
       return JsonConvert.DeserializeObject<OperationResponse<T>>(json);
+    }
+
+    public string DecryptStringAsString(string cipherText)
+    {
+      byte[] initVectorBytes = Encoding.UTF8.GetBytes(initVector);
+      byte[] cipherTextBytes = Convert.FromBase64String(cipherText);
+      PasswordDeriveBytes password = new PasswordDeriveBytes(passPhrase, null);
+      byte[] keyBytes = password.GetBytes(keysize / 8);
+      RijndaelManaged symmetricKey = new RijndaelManaged();
+      symmetricKey.Mode = CipherMode.CBC;
+      ICryptoTransform decryptor = symmetricKey.CreateDecryptor(keyBytes, initVectorBytes);
+      MemoryStream memoryStream = new MemoryStream(cipherTextBytes);
+      CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
+      byte[] plainTextBytes = new byte[cipherTextBytes.Length];
+      int decryptedByteCount = cryptoStream.Read(plainTextBytes, 0, plainTextBytes.Length);
+      memoryStream.Close();
+      cryptoStream.Close();
+      string json = Encoding.UTF8.GetString(plainTextBytes, 0, decryptedByteCount);
+      return json;
     }
   }
 }
