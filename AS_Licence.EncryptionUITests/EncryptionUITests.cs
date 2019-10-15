@@ -43,23 +43,5 @@ namespace AS_Licence.EncryptionUITests
       Assert.IsFalse(result.Result.Status);
     }
 
-    [TestMethod]
-    public void Can_Pass_To_LisansAdresi()
-    {
-      //Arrange
-      string lisansAdres
-        = "http://lisans.codeapp.co/";
-
-      var registerInfo = new RegisterComputer("NottiV1", "kurtay@adminsoft.com.tr");
-
-      //Action
-      var result = new LisansHelper(lisansAdres).GetRegisterRequestResponse(registerInfo);
-
-      //Assert
-      Assert.IsNotNull(result);
-
-      Debug.WriteLine(result.Result.Message);
-      Assert.IsTrue(result.Result.Status);
-    }
   }
 }

@@ -297,7 +297,7 @@ namespace AS_Licence.Helpers.EncryptionUI
     // This constant is used to determine the keysize of the encryption algorithm
     private const int keysize = 256;
 
-    private const string passPhrase = "nasilsinhaciabiiyimisinbendecokiyimallahiyilikversin12312312";
+    private const string passPhrase = "nasilsinhaciabiiyimisinbendecok";
     //Encrypt
     //Decrypt
     public OperationResponse<T> DecryptString(string cipherText)
