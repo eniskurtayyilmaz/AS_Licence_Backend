@@ -19,7 +19,7 @@ export class ErrorInterceptor implements HttpInterceptor {
                         console.error(applicationErrorFromBase64);
                         return throwError(applicationErrorFromBase64);
                     }
-                    const serverError = error.error.errors;
+                    const serverError = error.error.message;
                     let modelStateErrors = '';
                     if (serverError && typeof serverError === 'object') {
                         for (const key in serverError) {

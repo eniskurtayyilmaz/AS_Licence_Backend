@@ -21,7 +21,7 @@ namespace AS_Licence.WebUI.CoreAPI.Controllers
 
     [HttpPost]
     [Route("SaveSubscription")]
-    public async Task<IActionResult> Post([FromBody] Subscription subscription)
+    public async Task<IActionResult> SaveSubscription([FromBody] Subscription subscription)
     {
       var subscriptionResult = await _subscriptionManager.SaveSubscription(subscription);
       if (subscriptionResult.Status == false)
@@ -32,9 +32,9 @@ namespace AS_Licence.WebUI.CoreAPI.Controllers
       return Ok(subscriptionResult);
     }
 
-    [HttpPost]
+    [HttpGet]
     [Route("GetSubscriptionListByCustomerId")]
-    public async Task<IActionResult> Post(int customerId)
+    public async Task<IActionResult> GetSubscriptionListByCustomerId(int customerId)
     {
       var subscriptionResult = await _subscriptionManager.GetSubscriptionListByCustomerId(customerId);
       if (subscriptionResult.Status == false)
@@ -45,5 +45,31 @@ namespace AS_Licence.WebUI.CoreAPI.Controllers
       return Ok(subscriptionResult);
     }
 
+
+    [HttpGet]
+    [Route("GetSubscriptionSummaryListByCustomerId")]
+    public async Task<IActionResult> GetSubscriptionSummaryListByCustomerId(int customerId)
+    {
+      var subscriptionResult = await _subscriptionManager.GetSubscriptionSummaryListByCustomerId(customerId);
+      if (subscriptionResult.Status == false)
+      {
+        return BadRequest(subscriptionResult);
+      }
+
+      return Ok(subscriptionResult);
+    }
+
+    [HttpDelete]
+    [Route("DeleteSubscriptionBySubscriptionId/{subscriptionId}")]
+    public async Task<IActionResult> DeleteSubscriptionBySubscriptionId(int subscriptionId)
+    {
+      var subscriptionResult = await _subscriptionManager.DeleteSubscriptionBySubscriptionId(subscriptionId);
+      if (subscriptionResult.Status == false)
+      {
+        return BadRequest(subscriptionResult);
+      }
+
+      return Ok(subscriptionResult);
+    }
   }
 }

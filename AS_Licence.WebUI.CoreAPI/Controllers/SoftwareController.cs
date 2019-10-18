@@ -15,7 +15,7 @@ namespace AS_Licence.WebUI.CoreAPI.Controllers
   [Authorize]
   public class SoftwareController : ControllerBase
   {
-    
+
     private readonly ISoftwareManager _softwareManager;
     public SoftwareController(ISoftwareManager softwareManager)
     {
@@ -35,6 +35,21 @@ namespace AS_Licence.WebUI.CoreAPI.Controllers
 
       return Ok(softwareResult);
     }
+
+    [HttpGet]
+    [Route("GetSoftwareById")]
+    [AllowAnonymous]
+    public async Task<IActionResult> Get(int softwareId)
+    {
+      var softwareResult = await _softwareManager.GetBySoftwareId(softwareId);
+      if (softwareResult.Status == false)
+      {
+        return BadRequest(softwareResult);
+      }
+
+      return Ok(softwareResult);
+    }
+
 
     [HttpPost]
     [Route("SaveSoftware")]

@@ -22,8 +22,7 @@ export class SoftwareService {
     if (softwareId) {
       return this.http.get<any>(this.baseUrl + 'GetSoftwareById/?softwareId=' + softwareId)
         .pipe();
-    }
-    else {
+    } else {
       return this.http.get<any>(this.baseUrl + 'GetSoftwareLists')
         .pipe();
     }

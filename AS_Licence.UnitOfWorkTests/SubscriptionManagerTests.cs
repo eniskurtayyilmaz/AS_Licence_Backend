@@ -40,6 +40,7 @@ namespace AS_Licence.UnitOfWorkTests
       _softwareManager = new SoftwareService(_unitOfWork);
       _subscriptionManager = new SubscriptionService(_unitOfWork, _softwareManager);
     }
+
     [Fact]
     public async Task Can_Add_Subscription_Thought_UnitOfWork()
     {
@@ -99,6 +100,27 @@ namespace AS_Licence.UnitOfWorkTests
       }
 
       Assert.True(result.Status);
+
+    }
+
+
+    [Fact]
+    public async Task Can_Get_SubscriptionSummaryList_Thought_UnitOfWork()
+    {
+      //Arrange
+
+
+      //Action
+      var result = await _subscriptionManager.GetSubscriptionSummaryListByCustomerId(5);
+
+      //Asserts
+      if (result.Status == false)
+      {
+        _outputHelper.WriteLine(result.Message);
+      }
+
+      Assert.True(result.Status);
+      Assert.True(result.Data.Count == 2);
 
     }
   }

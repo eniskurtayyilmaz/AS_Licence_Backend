@@ -132,7 +132,7 @@ namespace AS_Licence.WebUI.CoreAPI
         });
       });
 
-      app.UseCors(x => x.AllowAnyOrigin().AllowAnyOrigin().AllowAnyHeader());
+      app.UseCors(x => x.AllowAnyOrigin().AllowAnyOrigin().AllowAnyHeader().AllowCredentials());
 
       app.UseAuthentication();
       app.UseMvcWithDefaultRoute();

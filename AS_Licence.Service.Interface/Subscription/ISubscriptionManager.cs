@@ -20,9 +20,13 @@ namespace AS_Licence.Service.Interface.Subscription
     Task<OperationResponse<Entities.Model.Subscription.Subscription>> GetBySubscriptionId(int id);
     Task<OperationResponse<List<Entities.Model.Subscription.Subscription>>> GetSubscriptionListBySoftwareId(
       int softwareId);
+
+
     Task<OperationResponse<List<Entities.Model.Subscription.Subscription>>> GetSubscriptionListByCustomerId(
       int customerId);
     Task<OperationResponse<Entities.Model.Subscription.Subscription>> GetBySubscriptionStatusBySoftwareIdAndCustomerId(
       int softwareId, int customerId);
+    Task<OperationResponse<List<Entities.ViewModel.Subscription.SubscriptionInfo>>> GetSubscriptionSummaryListByCustomerId(
+      int customerId);
   }
 }

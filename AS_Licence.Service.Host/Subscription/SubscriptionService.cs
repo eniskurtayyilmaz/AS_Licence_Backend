@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 using AS_Licence.Data.Interface.UnitOfWork;
 using AS_Licence.Entites.Validation.Entity.Subscription;
 using AS_Licence.Entities.ViewModel.Operations;
+using AS_Licence.Entities.ViewModel.Subscription;
 using AS_Licence.Helpers.Extension;
 using AS_Licence.Service.Host.Customer;
+using AS_Licence.Service.Host.CustomerComputerInfo;
 using AS_Licence.Service.Host.Software;
 using AS_Licence.Service.Interface.Customer;
 using AS_Licence.Service.Interface.Software;
@@ -23,12 +25,13 @@ namespace AS_Licence.Service.Host.Subscription
     private readonly IUnitOfWork _unitOfWork;
     private readonly ISoftwareManager _softwareManager;
     private readonly ICustomerManager _customerManager;
-
+    private readonly ICustomerComputerInfoManager _customerComputerInfoManager;
     public SubscriptionService(IUnitOfWork unitOfWork, ISoftwareManager softwareManager)
     {
       _unitOfWork = unitOfWork;
       _softwareManager = softwareManager;
       _customerManager = new CustomerService(_unitOfWork);
+      _customerComputerInfoManager = new CustomerComputerInfoService(_unitOfWork, this);
     }
 
     public async Task<OperationResponse<List<Entities.Model.Subscription.Subscription>>> GetSubscriptionList(
@@ -217,6 +220,53 @@ namespace AS_Licence.Service.Host.Subscription
       {
         var existsSubscription = await _unitOfWork.SubscriptionRepository.GetSubscriptionBySoftwareIdAndCustomerId(softwareId, customerId);
         response.Data = existsSubscription ?? throw new Exception("Sistemde müşteriye ait kayıtlı bir abonelik bilgisi bulunamadı.");
+        response.Status = true;
+      }
+      catch (Exception e)
+      {
+        response.Status = false;
+        response.Message = e.Message;
+      }
+      return response;
+    }
+
+    public async Task<OperationResponse<List<SubscriptionInfo>>> GetSubscriptionSummaryListByCustomerId(int customerId)
+    {
+      OperationResponse<List<SubscriptionInfo>> response = new OperationResponse<List<SubscriptionInfo>>();
+      try
+      {
+        var subscriptionList = await _unitOfWork.SubscriptionRepository.GetSubscriptionListByCustomerId(customerId);
+        var softwareList = await _softwareManager.GetSoftwareList();
+
+        List<SubscriptionInfo> list = new List<SubscriptionInfo>();
+        foreach (var t in subscriptionList)
+        {
+          Entities.Model.Software.Software soft = null;
+          if (softwareList.Status)
+          {
+            soft = softwareList.Data.FirstOrDefault(x => x.SoftwareId == t.SoftwareId);
+          }
+
+          var r = await _customerComputerInfoManager.GetAlreadyComputerCountsBySubscriptionId(t.SubscriptionId);
+
+          int alreadyCount = r.Status ? r.Data : 0;
+          var subscription = new SubscriptionInfo()
+          {
+            SoftwareId = t.SoftwareId,
+            CustomerId = t.CustomerId,
+            SubscriptionId = t.SubscriptionId,
+            SubScriptionEndDate = t.SubScriptionEndDate,
+            SubScriptionStartDate = t.SubScriptionStartDate,
+            SubscriptionIsActive = t.SubscriptionIsActive,
+            SubScriptionLicenceCount = t.SubScriptionLicenceCount,
+            SoftwareName = soft != null ? soft.SoftwareName : "",
+            SubScriptionCurrentLicenceCount = alreadyCount,
+          };
+
+          list.Add(subscription);
+
+        }
+        response.Data = list;
         response.Status = true;
       }
       catch (Exception e)

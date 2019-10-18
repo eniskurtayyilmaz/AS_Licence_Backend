@@ -35,6 +35,19 @@ namespace AS_Licence.WebUI.CoreAPI.Controllers
       return Ok(customerResult);
     }
 
+    [HttpGet]
+    [Route("GetCustomerById")]
+    public async Task<IActionResult> Get(int customerId)
+    {
+      var customerResult = await _customerManager.GetByCustomerId(customerId);
+      if (customerResult.Status == false)
+      {
+        return BadRequest(customerResult);
+      }
+
+      return Ok(customerResult);
+    }
+
     [HttpPost]
     [Route("SaveCustomer")]
     public async Task<IActionResult> Post([FromBody] Customer customer)
