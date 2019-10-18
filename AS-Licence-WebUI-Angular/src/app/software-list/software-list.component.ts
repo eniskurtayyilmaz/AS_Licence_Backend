@@ -16,11 +16,11 @@ export class SoftwareListComponent implements OnInit {
   softwares: Software[] = [];
 
   ngOnInit() {
-    this.getSoftwareLists();
+    this.getSoftwareLists(null);
   }
 
-  getSoftwareLists() {
-    this.softwareService.getSoftwareLists().subscribe(next => {
+  getSoftwareLists(softwareId: number) {
+    this.softwareService.getSoftwareLists(softwareId).subscribe(next => {
       // alert('login ok');
       this.softwares = next.data;
     }, error => {

@@ -16,6 +16,7 @@ import { SoftwareListComponent } from './software-list/software-list.component';
 import { SoftwareFilterPipe } from './_viewmodel/software/software.pipe';
 import { CustomerListComponent } from './customer-list/customer-list.component';
 import { CustomerFilterPipe } from './_viewmodel/customer/customer.pipe';
+import { CustomerDetailComponent } from './customer-detail/customer-detail.component';
 
 @NgModule({
    declarations: [
@@ -25,10 +26,9 @@ import { CustomerFilterPipe } from './_viewmodel/customer/customer.pipe';
       CustomerListComponent,
       SoftwareListComponent,
       CustomerListComponent,
-
       SoftwareFilterPipe,
       CustomerFilterPipe,
-
+      CustomerDetailComponent
    ],
    imports: [
       BrowserModule,

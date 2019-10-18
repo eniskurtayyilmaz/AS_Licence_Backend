@@ -16,12 +16,17 @@ export class SoftwareService {
   }
 
 
-  getSoftwareLists(): Observable<any> {
+  getSoftwareLists(softwareId: number): Observable<any> {
 
-    let url = this.baseUrl + 'GetSoftwareLists';
 
-    return this.http.get<any>(url)
-      .pipe();
+    if (softwareId) {
+      return this.http.get<any>(this.baseUrl + 'GetSoftwareById/?softwareId=' + softwareId)
+        .pipe();
+    }
+    else {
+      return this.http.get<any>(this.baseUrl + 'GetSoftwareLists')
+        .pipe();
+    }
   }
 
 

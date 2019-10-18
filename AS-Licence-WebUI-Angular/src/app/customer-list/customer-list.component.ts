@@ -15,10 +15,10 @@ export class CustomerListComponent implements OnInit {
   constructor(private customerService: CustomerService, private alertify: AlertifyService, private router: Router) { }
 
   ngOnInit() {
-    this.getCustomers();
+    this.getCustomers(null);
   }
-  getCustomers() {
-    this.customerService.getCustomerLists().subscribe(next => {
+  getCustomers(customerId: number) {
+    this.customerService.getCustomerLists(customerId).subscribe(next => {
       // alert('login ok');
       this.customers = next.data;
     }, error => {
@@ -26,5 +26,4 @@ export class CustomerListComponent implements OnInit {
       console.log(error);
     });
   }
-
 }

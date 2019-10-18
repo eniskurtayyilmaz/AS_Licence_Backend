@@ -4,7 +4,7 @@
     <form class="form-inline my-2 my-lg-0" #FormCustomerSearch>
       <input class="form-control mr-sm-2" [(ngModel)]="FormCustomerSearch.filterText" type="search" placeholder="Ara"
         aria-label="Search" [ngModelOptions]="{standalone: true}">
-      <button class="btn btn-outline-success my-2 my-sm-0" [routerLink]="['/customer-add']">Yeni Ekle</button>
+      <button class="btn btn-outline-success my-2 my-sm-0" [routerLink]="['/customer', 0]">Yeni Ekle</button>
     </form>
     <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
 
@@ -22,7 +22,10 @@
       <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
         <div class="d-flex justify-content-between align-items-center w-100">
           <strong class="text-gray-dark">{{customer.customerName}}</strong>
-          <a [routerLink]="['/customer-list']">Düzenle</a>
+          <div>
+            <a [routerLink]="['/customer-detail', customer.customerId]">Göster</a>&nbsp;
+            <a [routerLink]="['/customer', customer.customerId]">Düzenle</a>&nbsp;
+          </div>
         </div>
         <span class="d-block"> E-Posta: {{customer.customerEMail}}, Telefon:
           {{customer.customerPhone}}, Durum: {{ customer.customerIsActive == false ? 'Pasif' : 'Aktif' }}</span>

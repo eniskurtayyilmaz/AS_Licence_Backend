@@ -15,9 +15,7 @@ export class CustomerService {
 
   }
 
-  getCustomerLists(): Observable<any> {
-
-    let url = this.baseUrl + 'GetCustomerLists';
+  getCustomerLists(customerId: number): Observable<any> {
 
     const httpOptions = {
       headers: new HttpHeaders({
@@ -25,6 +23,16 @@ export class CustomerService {
         'Authorization': 'Bearer ' + this.authService.getToken()
       })
     };
-    return this.http.get<any>(url, httpOptions).pipe();
+
+
+    if (customerId) {
+      return this.http.get<any>(this.baseUrl + 'GetCustomerId/?customerId=' + customerId, httpOptions)
+        .pipe();
+    }
+    else {
+      return this.http.get<any>(this.baseUrl + 'GetCustomerLists', httpOptions)
+        .pipe();
+    }
+
   }
 }
