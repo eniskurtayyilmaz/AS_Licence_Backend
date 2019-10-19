@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from '../auth.service';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Websetting } from 'src/app/_viewmodel/settings/websetting';
+import { Software } from 'src/app/_viewmodel/software/software';
 
 @Injectable({
   providedIn: 'root'
@@ -9,10 +11,12 @@ import { Observable } from 'rxjs';
 export class SoftwareService {
 
 
-  baseUrl = 'http://lisans.codeapp.co/api/Software/';
+  env: { baseUrl: any; };
+  baseUrl = '';
 
   constructor(private authService: AuthService, private http: HttpClient) {
-
+    this.env = Websetting;
+    this.baseUrl = this.env.baseUrl + 'Software/';
   }
 
 
@@ -28,5 +32,29 @@ export class SoftwareService {
     }
   }
 
+  saveSoftware(software: Software) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + this.authService.getToken()
+      })
+    };
 
+
+    return this.http.post<any>(this.baseUrl + 'SaveSoftware', software, httpOptions)
+      .pipe();
+  }
+
+
+  deleteSoftware(softwareId: number) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + this.authService.getToken()
+      })
+    };
+
+    return this.http.delete<any>(this.baseUrl + 'DeleteSoftware/' + softwareId, httpOptions)
+      .pipe();
+  }
 }

@@ -1,13 +1,17 @@
 <main role="main" class="container">
   <div class="my-3 p-3 bg-white rounded shadow-sm">
+
     <h6 class="border-bottom border-gray pb-2 mb-0">Yazılım Listesi</h6>
     <form class="form-inline my-2 my-lg-0" #FormSoftwareSearch>
       <input class="form-control mr-sm-2" [(ngModel)]="FormSoftwareSearch.filterText" type="search" placeholder="Ara"
         aria-label="Search" [ngModelOptions]="{standalone: true}">
-      <button class="btn btn-outline-success my-2 my-sm-0" [routerLink]="['/software-add']">Yeni Ekle</button>
+      <button class="btn btn-outline-success my-2 my-sm-0" [routerLink]="['/software-detail', 0]">Yeni
+        Ekle</button>
     </form>
     <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-
+      <div class="spinner-border text-primary" role="status" [hidden]="!FormSoftware">
+        <span class="sr-only">Loading...</span>
+      </div>
     </div>
 
 
@@ -16,15 +20,17 @@
       <svg class=" bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg"
         preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32">
         <title>versiyon: {{software.softwareLastVersion}}</title>
-        <rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff"
-          dy=".3em">32x32</text>
+        <rect width="100%" height="100%" [attr.fill]="software.softwareIsActive == true ? '#00FF00' :'#FF0000'">
+          <text x="50%" y="50%" fill="#007bff" dy=".3em"></text>
+        </rect>
       </svg>
       <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
         <div class="d-flex justify-content-between align-items-center w-100">
-          <strong class="text-gray-dark">{{software.softwareName}}</strong>
-          <a [routerLink]="['/software-list']">Düzenle</a>
-        </div>
-        <span class="d-block">Güncel versiyon: {{software.softwareLastVersion}}</span>
+          <strong class="text-gray-dark"><a
+              [routerLink]="['/software-detail', software.softwareId]">{{software.softwareName}}</a></strong>
+          <a [routerLink]="['/software-detail', software.softwareId]">Düzenle </a> </div> <span class="d-block">Güncel
+          versiyon:
+          {{software.softwareLastVersion}}</span>
       </div>
     </div>
   </div>

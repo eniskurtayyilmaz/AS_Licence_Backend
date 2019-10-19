@@ -11,5 +11,7 @@ namespace AS_Licence.Service.Interface.User
     Task<OperationResponse<Entities.Model.User.User>> RegisterUser(Entities.Model.User.User user, string password);
     Task<OperationResponse<Entities.Model.User.User>> LoginUser(string username, string password);
     Task<OperationResponse<bool>> UserExists(string username);
+    Task<OperationResponse<Entities.Model.User.User>> GetUserInformationByUsername(string username);
+    Task<OperationResponse<bool>> ChangeUserPassword(string username, string password, string newPassword, string newAgainPassword);
   }
 }

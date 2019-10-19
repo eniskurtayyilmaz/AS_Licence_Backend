@@ -11,8 +11,11 @@ import { Software } from '../_viewmodel/software/software';
 })
 export class SoftwareListComponent implements OnInit {
 
-  constructor(private softwareService: SoftwareService, private alertify: AlertifyService, private router: Router) { }
+  constructor(private softwareService: SoftwareService, private alertify: AlertifyService, private router: Router) {
+    this.FormSoftware = true;
+  }
 
+  FormSoftware = true;
   softwares: Software[] = [];
 
   ngOnInit() {
@@ -26,6 +29,8 @@ export class SoftwareListComponent implements OnInit {
     }, error => {
       this.alertify.error(error);
       console.log(error);
+    }, () => {
+      this.FormSoftware = false;
     });
   }
 

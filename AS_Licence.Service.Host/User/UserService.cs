@@ -50,8 +50,13 @@ namespace AS_Licence.Service.Host.User
 
       try
       {
-        response.Data = await _unitOfWork.AuthRepository.Login(username, password);
+        response.Data = await _unitOfWork.AuthRepository.Login(username.ToLower(), password);
         response.Status = response.Data != null;
+
+        if (response.Status == false)
+        {
+          response.Message = "Kullanıcı adı ve şifreniz yanlış veya aktif kullanıcı değil!";
+        }
       }
       catch (Exception e)
       {
@@ -68,11 +73,68 @@ namespace AS_Licence.Service.Host.User
 
       try
       {
-        response.Status = await _unitOfWork.AuthRepository.UserExists(username);
+        response.Status = await _unitOfWork.AuthRepository.UserExists(username.ToLower());
         if (response.Status)
         {
           response.Message = "Böyle bir kullanıcı zaten mevcut";
         }
+      }
+      catch (Exception e)
+      {
+        response.Status = false;
+        response.Message = e.Message;
+      }
+
+      return response;
+    }
+
+    public async Task<OperationResponse<Entities.Model.User.User>> GetUserInformationByUsername(string username)
+    {
+      OperationResponse<Entities.Model.User.User> response = new OperationResponse<Entities.Model.User.User>();
+
+      try
+      {
+        response.Data = await _unitOfWork.AuthRepository.GetUserInformationByUsername(username.ToLower());
+        if (response.Data == null)
+        {
+          response.Message = "Böyle bir kullanıcı yok.";
+        }
+      }
+      catch (Exception e)
+      {
+        response.Status = false;
+        response.Message = e.Message;
+      }
+
+      return response;
+    }
+
+    public async Task<OperationResponse<bool>> ChangeUserPassword(string username, string password, string newPassword, string newAgainPassword)
+    {
+      OperationResponse<bool> response = new OperationResponse<bool>();
+
+      try
+      {
+        var existsUserWithPassword = await this.LoginUser(username, password);
+        if (existsUserWithPassword.Status == false)
+        {
+          throw new Exception(existsUserWithPassword.Message);
+        }
+
+        if (newPassword.Length <= 5 || newAgainPassword.Length <= 5)
+        {
+          throw new Exception("Yeni şifreniz 5 karakterden büyük olmalıdır.");
+        }
+
+        if (newPassword != newAgainPassword)
+        {
+          throw new Exception("Yeni şifreniz ve tekrarı uyuşmuyor.");
+        }
+
+        await _unitOfWork.AuthRepository.ChangeUserPassword(username.ToLower(), newPassword);
+        var resultUnitOfWork = await _unitOfWork.Save();
+        response.Status = resultUnitOfWork.Status;
+        response.Message = response.Status ? "Şifre değiştirme işlemi başarılı." : resultUnitOfWork.Message;
       }
       catch (Exception e)
       {

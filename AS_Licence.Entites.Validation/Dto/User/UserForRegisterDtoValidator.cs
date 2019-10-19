@@ -10,8 +10,8 @@ namespace AS_Licence.Entites.Validation.Dto.User
   {
     public UserForRegisterDtoValidator()
     {
-      RuleFor(x => x.Username).NotNull().NotEmpty();
-      RuleFor(x => x.Password).NotNull().NotEmpty();
+      RuleFor(x => x.Username).NotNull().NotEmpty().MinimumLength(5);
+      RuleFor(x => x.Password).NotNull().NotEmpty().MinimumLength(5);
     }
   }
 }

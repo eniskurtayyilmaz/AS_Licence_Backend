@@ -14,17 +14,17 @@
       <li class="nav-item" routerLinkActive="active">
         <a class="nav-link" [routerLink]="['/software-list']" routerLinkActive="router-link-active">Yazılım Listesi</a>
       </li>
-    </ul>   
+    </ul>
 
     <div *ngIf="loggedIn()" dropdown class="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 
       <a class="dropdown-toggle text-light" dropdownToggle>
-        Hoşgeldiniz {{authService.decodedToken?.unique_name | titlecase}}
+        Hoşgeldiniz {{authService.getUserName() | titlecase}}
       </a>
 
 
       <div class="dropdown-menu" *dropdownMenu>
-        <a class="dropdown-item" href="#"><i class="fa fa-user"></i>Profili Düzenle</a>
+        <a class="dropdown-item" [routerLink]="['/profile']"><i class="fa fa-user"></i>Profili Düzenle</a>
         <div class="dropdown-divider"></div>
         <a class="dropdown-item" (click)="logout()">Çıkış yap</a>
       </div>

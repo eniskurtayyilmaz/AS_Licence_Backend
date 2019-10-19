@@ -63,7 +63,7 @@ namespace AS_Licence.Service.Host.CustomerComputerInfo
           throw new Exception(valid.GetErrorMessagesOnSingleLine());
         }
 
-        var subscriptionExists = await _subscriptionManager.GetBySubscriptionId(customer.SubscriptionId);
+        var subscriptionExists = await _subscriptionManager.GetSubscriptionBySubscriptionId(customer.SubscriptionId);
         if (subscriptionExists.Status == false)
         {
           throw new Exception(subscriptionExists.Message);

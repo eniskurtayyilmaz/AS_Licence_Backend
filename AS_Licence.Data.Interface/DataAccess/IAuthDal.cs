@@ -12,5 +12,7 @@ namespace AS_Licence.Data.Interface.DataAccess
     Task<User> Register(User user, string password);
     Task<User> Login(string username, string password);
     Task<bool> UserExists(string username);
+    Task<User> GetUserInformationByUsername(string username);
+    Task<bool> ChangeUserPassword(string username, string newPassword);
   }
 }

@@ -21,7 +21,6 @@ namespace AS_Licence.WebUI.CoreAPI.Controllers
 {
   [Route("api/[controller]")]
   [ApiController]
-
   public class AuthController : ControllerBase
   {
     private readonly IUserManager _userManager;
@@ -31,8 +30,36 @@ namespace AS_Licence.WebUI.CoreAPI.Controllers
       _userManager = userManager;
       _configuration = configuration;
     }
-
+    
     [Authorize]
+    [HttpPost("ChangeUserPassword")]
+    public async Task<IActionResult> ChangeUserPassword([FromBody] UserForPasswordChangeDto userForPasswordChangeDto)
+    {
+    
+
+      var valid = await new UserForPasswordChangeDtoValidators().ValidateAsync(userForPasswordChangeDto);
+      if (!valid.IsValid)
+      {
+        OperationResponse<bool> validResponse = new OperationResponse<bool>()
+        {
+          Status = false,
+          Message = valid.GetErrorMessagesOnSingleLine()
+        };
+        return BadRequest(validResponse);
+      }
+
+
+      var userExistsResult = await _userManager.ChangeUserPassword(User.Identity.Name, userForPasswordChangeDto.CurrentPassword, userForPasswordChangeDto.NewPassword, userForPasswordChangeDto.AgainNewPassword);
+      if (userExistsResult.Status == false)
+      {
+        return BadRequest(userExistsResult);
+      }
+
+      return Ok(userExistsResult);
+    }
+
+
+    [AllowAnonymous]
     [HttpPost("Register")]
     public async Task<IActionResult> Register([FromBody] UserForRegisterDto userForRegisterDto)
     {
@@ -59,7 +86,7 @@ namespace AS_Licence.WebUI.CoreAPI.Controllers
       var userToCreate = new User()
       {
         UserName = userForRegisterDto.Username,
-        UserIsActive = true,
+        UserIsActive = false, // Önemli 
         CreatedDateTime = DateTime.Now
       };
 
@@ -87,6 +114,7 @@ namespace AS_Licence.WebUI.CoreAPI.Controllers
         return BadRequest(validResponse);
       }
 
+      
 
       var userFromRepo = await _userManager.LoginUser(userForLoginDto.Username.ToLower(), userForLoginDto.Password);
       if (userFromRepo.Status == false)
@@ -106,7 +134,7 @@ namespace AS_Licence.WebUI.CoreAPI.Controllers
       var tokenDescriptor = new SecurityTokenDescriptor()
       {
         Subject = new ClaimsIdentity(claims),
-        Expires = DateTime.Now.AddDays(1),
+        Expires = DateTime.Now.AddMinutes(15),
         SigningCredentials = creds
       };
 
@@ -115,6 +143,18 @@ namespace AS_Licence.WebUI.CoreAPI.Controllers
       var token = tokenHandler.CreateToken(tokenDescriptor);
 
       return Ok(new { token = tokenHandler.WriteToken(token), message = "Hoşgeldiniz.. " + userFromRepo.Data.UserName });
+    }
+
+    [Authorize]
+    [HttpGet("GetUserInformation")]
+    public async Task<IActionResult> GetUserInformation()
+    {
+      var response = await _userManager.GetUserInformationByUsername(User.Identity.Name);
+      if (response.Status == false)
+      {
+        return BadRequest(response);
+      }
+      return Ok(response);
     }
   }
 }

@@ -17,7 +17,7 @@ namespace AS_Licence.Service.Interface.Subscription
     Task<OperationResponse<Entities.Model.Subscription.Subscription>> SaveSubscription(
       Entities.Model.Subscription.Subscription subscription);
     Task<OperationResponse<Entities.Model.Subscription.Subscription>> DeleteSubscriptionBySubscriptionId(int id);
-    Task<OperationResponse<Entities.Model.Subscription.Subscription>> GetBySubscriptionId(int id);
+    Task<OperationResponse<Entities.Model.Subscription.Subscription>> GetSubscriptionBySubscriptionId(int id);
     Task<OperationResponse<List<Entities.Model.Subscription.Subscription>>> GetSubscriptionListBySoftwareId(
       int softwareId);
 

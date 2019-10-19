@@ -65,7 +65,7 @@ namespace AS_Licence.WebUI.CoreAPI.Controllers
     }
 
     [HttpDelete]
-    [Route("DeleteSoftware")]
+    [Route("DeleteSoftware/{softwareId}")]
     public async Task<IActionResult> Post(int softwareId)
     {
       var softwareResult = await _softwareManager.DeleteSoftwareBySoftwareId(softwareId);

@@ -96,6 +96,12 @@ namespace AS_Licence.WebUI.CoreAPI
           };
         }
       );
+
+      services.AddCors(o => o.AddPolicy("CorePolicy", builder =>
+        {
+          builder.AllowAnyOrigin().AllowAnyHeader().AllowCredentials().AllowAnyMethod();
+          builder.Build();
+        }));
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -132,7 +138,8 @@ namespace AS_Licence.WebUI.CoreAPI
         });
       });
 
-      app.UseCors(x => x.AllowAnyOrigin().AllowAnyOrigin().AllowAnyHeader().AllowCredentials());
+
+      app.UseCors(x => x.AllowAnyOrigin().AllowAnyOrigin().AllowAnyHeader().AllowCredentials().AllowAnyMethod());
 
       app.UseAuthentication();
       app.UseMvcWithDefaultRoute();

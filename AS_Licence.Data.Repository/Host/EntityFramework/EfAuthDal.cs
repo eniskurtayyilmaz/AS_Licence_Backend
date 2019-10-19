@@ -22,8 +22,10 @@ namespace AS_Licence.Data.Repository.Host.EntityFramework
       byte[] passwordHash, passwordSalt;
       CreatePasswordHash(password, out passwordHash, out passwordSalt);
 
+      user.UserName = user.UserName.ToLower();
       user.PasswordHash = passwordHash;
       user.PasswordSalt = passwordSalt;
+
 
       await Insert(user);
      // await _context.SaveChangesAsync();
@@ -33,13 +35,7 @@ namespace AS_Licence.Data.Repository.Host.EntityFramework
 
     public async Task<User> Login(string username, string password)
     {
-
-      if (username == "kurtay" && password == "kurtay")
-      {
-        return new User() { UserId =  -99, UserName = username};
-      }
-
-      var _user = Get(x => x.UserName == username && x.UserIsActive).Result.FirstOrDefault();
+      var _user = Get(x => x.UserName == username.ToLower() && x.UserIsActive).Result.FirstOrDefault();
 
       if (_user == null)
         return _user;
@@ -55,13 +51,38 @@ namespace AS_Licence.Data.Repository.Host.EntityFramework
 
     public async Task<bool> UserExists(string username)
     {
-      if (Get(x => x.UserName == username).Result.FirstOrDefault() != null)
+      if (Get(x => x.UserName == username.ToLower()).Result.FirstOrDefault() != null)
       {
         return true;
       }
 
       return false;
 
+    }
+
+    public async Task<User> GetUserInformationByUsername(string username)
+    {
+      return Get(x => x.UserName == username.ToLower()).Result.FirstOrDefault();
+    }
+
+    public async Task<bool> ChangeUserPassword(string username, string newPassword)
+    {
+      var existsUser = await GetUserInformationByUsername(username);
+      if (existsUser != null)
+      {
+        byte[] passwordHash, passwordSalt;
+        CreatePasswordHash(newPassword, out passwordHash, out passwordSalt);
+
+        existsUser.UserName = existsUser.UserName.ToLower();
+        existsUser.PasswordHash = passwordHash;
+        existsUser.PasswordSalt = passwordSalt;
+
+        await Update(existsUser);
+
+        return true;
+      }
+
+      return false;
     }
 
     private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)

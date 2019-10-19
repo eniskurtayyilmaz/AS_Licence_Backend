@@ -33,10 +33,10 @@ namespace AS_Licence.WebUI.CoreAPI.Controllers
     }
 
     [HttpGet]
-    [Route("GetSubscriptionListByCustomerId")]
-    public async Task<IActionResult> GetSubscriptionListByCustomerId(int customerId)
+    [Route("GetSubscriptionSummaryListByCustomerId")]
+    public async Task<IActionResult> GetSubscriptionSummaryListByCustomerId(int customerId)
     {
-      var subscriptionResult = await _subscriptionManager.GetSubscriptionListByCustomerId(customerId);
+      var subscriptionResult = await _subscriptionManager.GetSubscriptionSummaryListByCustomerId(customerId);
       if (subscriptionResult.Status == false)
       {
         return BadRequest(subscriptionResult);
@@ -45,12 +45,11 @@ namespace AS_Licence.WebUI.CoreAPI.Controllers
       return Ok(subscriptionResult);
     }
 
-
     [HttpGet]
-    [Route("GetSubscriptionSummaryListByCustomerId")]
-    public async Task<IActionResult> GetSubscriptionSummaryListByCustomerId(int customerId)
+    [Route("GetSubscriptionBySubscriptionId")]
+    public async Task<IActionResult> GetSubscriptionBySubscriptionId(int subscriptionId)
     {
-      var subscriptionResult = await _subscriptionManager.GetSubscriptionSummaryListByCustomerId(customerId);
+      var subscriptionResult = await _subscriptionManager.GetSubscriptionBySubscriptionId(subscriptionId);
       if (subscriptionResult.Status == false)
       {
         return BadRequest(subscriptionResult);

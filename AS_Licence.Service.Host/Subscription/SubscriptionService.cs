@@ -146,6 +146,17 @@ namespace AS_Licence.Service.Host.Subscription
           throw new Exception("Sistemde kayıtlı bir abonelik bilgisi bulunamadı.");
         }
 
+        var existsComputer = await _customerComputerInfoManager.GetAlreadyComputerCountsBySubscriptionId(id);
+        if (existsComputer.Status == false)
+        {
+          throw new Exception(existsComputer.Message);
+        }
+
+        if (existsComputer.Data > 0)
+        {
+          throw new Exception("Bu abonelik silinemez çünkü kayıt edilmiş bilgisayarları var. Mevcut aboneliği kaldırmak yerine pasif hale getiriniz.");
+        }
+
         await _unitOfWork.SubscriptionRepository.Delete(existsSubscription);
         var responseUnitOfWork = await _unitOfWork.Save();
         response.Status = responseUnitOfWork.Status;
@@ -159,7 +170,7 @@ namespace AS_Licence.Service.Host.Subscription
       return response;
     }
 
-    public async Task<OperationResponse<Entities.Model.Subscription.Subscription>> GetBySubscriptionId(int id)
+    public async Task<OperationResponse<Entities.Model.Subscription.Subscription>> GetSubscriptionBySubscriptionId(int id)
     {
       OperationResponse<Entities.Model.Subscription.Subscription> response = new OperationResponse<Entities.Model.Subscription.Subscription>();
 
