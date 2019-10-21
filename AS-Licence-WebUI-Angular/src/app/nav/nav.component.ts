@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 })
 export class NavComponent implements OnInit {
 
+
   loginModel: any = {};
 
 
@@ -27,7 +28,7 @@ export class NavComponent implements OnInit {
       this.alertify.error(error);
       console.log(error);
     }, () => {
-      this.router.navigate(['/customer-list']);
+      this.router.navigate(['/home']);
     });
   }
 
