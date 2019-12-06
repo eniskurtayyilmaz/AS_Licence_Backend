@@ -11,7 +11,7 @@ AS_Licence is an open-source licence system. At below, you can see which using t
   - Dependency Injection
 
 ### ManagerUI Link
-[Click](crm.codeapp.co)
+[Click](http://crm.codeapp.co)
 
 ### Youtube Link
 I created a [YouTube video](https://youtu.be/V9smr9Pq42M)
