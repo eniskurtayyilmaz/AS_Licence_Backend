@@ -10,6 +10,9 @@ AS_Licence is an open-source licence system. At below, you can see which using t
   - Repository Pattern
   - Dependency Injection
 
+### Developer Link
+[Click](https://eniskurtayyilmaz.com)
+
 ### ManagerUI Link
 [Click](http://crm.codeapp.co)
 
