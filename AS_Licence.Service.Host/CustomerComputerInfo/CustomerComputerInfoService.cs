@@ -78,7 +78,7 @@ namespace AS_Licence.Service.Host.CustomerComputerInfo
         else
         {
           var existsCustomer =
-            await _unitOfWork.CustomerComputerInfoRepository.GetByCustomerComputerHddAndMacAndProcessSerialCode(
+            await _unitOfWork.CustomerComputerInfoRepository.GetByCustomerComputerHddAndMacAndProcessSerialCode(subscriptionExists.Data.SubscriptionId,
               customer.CustomerComputerInfoHddSerialCode, customer.CustomerComputerInfoMacSerialCode,
               customer.CustomerComputerInfoProcessSerialCode);
           if (existsCustomer != null)
@@ -202,13 +202,13 @@ namespace AS_Licence.Service.Host.CustomerComputerInfo
     }
 
     public async Task<OperationResponse<Entities.Model.CustomerComputerInfo.CustomerComputerInfo>>
-      GetByCustomerComputerHddAndMacAndProcessSerialCode(string hddCode, string macCode, string processCode)
+      GetByCustomerComputerHddAndMacAndProcessSerialCode(int subscriptionId, string hddCode, string macCode, string processCode)
     {
       OperationResponse<Entities.Model.CustomerComputerInfo.CustomerComputerInfo> response = new OperationResponse<Entities.Model.CustomerComputerInfo.CustomerComputerInfo>();
 
       try
       {
-        var existsCustomer = await _unitOfWork.CustomerComputerInfoRepository.GetByCustomerComputerHddAndMacAndProcessSerialCode(hddCode, macCode, processCode);
+        var existsCustomer = await _unitOfWork.CustomerComputerInfoRepository.GetByCustomerComputerHddAndMacAndProcessSerialCode(subscriptionId, hddCode, macCode, processCode);
         response.Data = existsCustomer ?? throw new Exception("Sistemde kayıtlı bir müşteri bilgisayar bilgisi bulunamadı.");
         response.Status = true;
       }

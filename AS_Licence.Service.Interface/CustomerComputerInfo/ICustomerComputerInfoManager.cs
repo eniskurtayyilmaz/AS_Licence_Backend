@@ -21,7 +21,7 @@ namespace AS_Licence.Service.Interface.Customer
     Task<OperationResponse<List<CustomerComputerInfo>>> GetByCustomerComputerInfoListBySubscriptionId(
       int SubscriptionId);
     Task<OperationResponse<int>> GetAlreadyComputerCountsBySubscriptionId(int subscriptionId);
-    Task<OperationResponse<CustomerComputerInfo>> GetByCustomerComputerHddAndMacAndProcessSerialCode(string hddCode,
+    Task<OperationResponse<CustomerComputerInfo>> GetByCustomerComputerHddAndMacAndProcessSerialCode(int subscriptionId, string hddCode,
       string macCode, string processCode);
 
   }

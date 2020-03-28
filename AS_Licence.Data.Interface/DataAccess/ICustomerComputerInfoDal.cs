@@ -6,7 +6,7 @@ namespace AS_Licence.Data.Interface.DataAccess
 {
   public interface ICustomerComputerInfoDal : IGenericRepository<CustomerComputerInfo>
   {
-    Task<CustomerComputerInfo> GetByCustomerComputerHddAndMacAndProcessSerialCode(string hddCode, string macCode,
+    Task<CustomerComputerInfo> GetByCustomerComputerHddAndMacAndProcessSerialCode(int subscriptionId, string hddCode, string macCode,
       string processCode);
   }
 }

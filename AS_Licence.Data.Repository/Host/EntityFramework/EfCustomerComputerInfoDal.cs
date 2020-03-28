@@ -18,11 +18,14 @@ namespace AS_Licence.Data.Repository.Host.EntityFramework
       _context = context;
     }
 
-    public async Task<CustomerComputerInfo> GetByCustomerComputerHddAndMacAndProcessSerialCode(string hddCode, string macCode,
+    public async Task<CustomerComputerInfo> GetByCustomerComputerHddAndMacAndProcessSerialCode(int subscriptionId, string hddCode, string macCode,
       string processCode)
     {
-      return this.Get(x => x.CustomerComputerInfoHddSerialCode == hddCode && x.CustomerComputerInfoMacSerialCode ==
-        macCode && x.CustomerComputerInfoProcessSerialCode == processCode).Result.SingleOrDefault();
+      return this.Get(x =>
+        x.SubscriptionId == subscriptionId
+        && x.CustomerComputerInfoHddSerialCode == hddCode
+        && x.CustomerComputerInfoMacSerialCode == macCode
+        && x.CustomerComputerInfoProcessSerialCode == processCode).Result.SingleOrDefault();
     }
   }
 }
