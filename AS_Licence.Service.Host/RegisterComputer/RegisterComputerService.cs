@@ -93,7 +93,7 @@ namespace AS_Licence.Service.Host.RegisterComputer
 
         //Lisans hakkı var ise gönderdiği HDD, MAC, Process bilgisi ile zaten o bilgisayar mı onu kontrol et
         var customerComputerInfoExists = await
-          _customerComputerInfoManager.GetByCustomerComputerHddAndMacAndProcessSerialCode(
+          _customerComputerInfoManager.GetByCustomerComputerHddAndMacAndProcessSerialCode(subscriptionExistsResult.Data.SubscriptionId,
             registerComputer.ComputerInfoHddSerialCode, registerComputer.ComputerInfoMacSerialCode,
             registerComputer.ComputerInfoProcessSerialCode);
         if (customerComputerInfoExists.Status)
