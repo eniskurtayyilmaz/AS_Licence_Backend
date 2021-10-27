@@ -36,6 +36,7 @@ namespace AS_Licence.WebUI.CoreAPI.Controllers
     [Route("GetSubscriptionSummaryListByCustomerId")]
     public async Task<IActionResult> GetSubscriptionSummaryListByCustomerId(int customerId)
     {
+      
       var subscriptionResult = await _subscriptionManager.GetSubscriptionSummaryListByCustomerId(customerId);
       if (subscriptionResult.Status == false)
       {

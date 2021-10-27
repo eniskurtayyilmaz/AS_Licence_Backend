@@ -26,7 +26,8 @@ namespace AS_Licence.WebUI.CoreAPI.Controllers
     [Route("GetCustomerLists")]
     public async Task<IActionResult> Get()
     {
-      var customerResult = await _customerManager.GetCustomerList();
+      
+      var customerResult = await _customerManager.GetCustomerList(null, x=> x.OrderBy(y=> y.CustomerName));
       if (customerResult.Status == false)
       {
         return BadRequest(customerResult);

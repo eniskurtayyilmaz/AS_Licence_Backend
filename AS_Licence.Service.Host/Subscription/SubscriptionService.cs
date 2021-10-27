@@ -277,7 +277,7 @@ namespace AS_Licence.Service.Host.Subscription
           list.Add(subscription);
 
         }
-        response.Data = list;
+        response.Data = list.OrderBy(x=> x.SoftwareName).ToList();
         response.Status = true;
       }
       catch (Exception e)

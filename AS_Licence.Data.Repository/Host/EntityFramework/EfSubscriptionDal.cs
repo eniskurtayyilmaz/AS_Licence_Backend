@@ -25,7 +25,7 @@ namespace AS_Licence.Data.Repository.Host.EntityFramework
 
     public async Task<List<Subscription>> GetSubscriptionListByCustomerId(int customerId)
     {
-      return this.Get(x => x.CustomerId == customerId).Result.ToList(); 
+      return await this.Get(x => x.CustomerId == customerId);
     }
 
     public async Task<Subscription> GetSubscriptionBySoftwareIdAndCustomerId(int softwareId, int customerId)

@@ -27,7 +27,7 @@ namespace AS_Licence.WebUI.CoreAPI.Controllers
     [AllowAnonymous]
     public async Task<IActionResult> Get()
     {
-      var softwareResult = await _softwareManager.GetSoftwareList();
+      var softwareResult = await _softwareManager.GetSoftwareList(null, x=> x.OrderBy(y=> y.SoftwareName));
       if (softwareResult.Status == false)
       {
         return BadRequest(softwareResult);
