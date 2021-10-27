@@ -13,6 +13,7 @@ namespace AS_Licence.Entities.Model.Software
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int SoftwareId { get; set; }
     public string SoftwareName { get; set; }
+    public string SoftwareDownloadUrl { get; set; }
     public string SoftwareLastVersion { get; set; }
     public bool SoftwareIsActive { get; set; }
     public DateTime? CreatedDateTime { get; set; }
