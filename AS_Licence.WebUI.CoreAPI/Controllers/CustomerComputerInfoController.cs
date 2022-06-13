@@ -10,42 +10,42 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AS_Licence.WebUI.CoreAPI.Controllers
 {
-  [Route("api/[controller]")]
-  [ApiController]
-  [Authorize]
-  public class CustomerComputerInfoController : ControllerBase
-  {
-    private ICustomerComputerInfoManager _customerComputerInfoManager;
-
-    public CustomerComputerInfoController(ICustomerComputerInfoManager customerComputerInfoManager)
+    [Route("api/[controller]")]
+    [ApiController]
+    [Authorize]
+    public class CustomerComputerInfoController : ControllerBase
     {
-      _customerComputerInfoManager = customerComputerInfoManager;
+        private ICustomerComputerInfoManager _customerComputerInfoManager;
+
+        public CustomerComputerInfoController(ICustomerComputerInfoManager customerComputerInfoManager)
+        {
+            _customerComputerInfoManager = customerComputerInfoManager;
+        }
+
+        [HttpGet]
+        [Route("GetCustomerComputerInfoListsBySubscriptionId")]
+        public async Task<IActionResult> Get(int subscriptionId)
+        {
+            var customerComputerInfoResult = await _customerComputerInfoManager.GetCustomerComputerInfoList(x=> x.SubscriptionId == subscriptionId, orderBy=> orderBy.OrderByDescending(x=> x.CreatedDateTime));
+            if (customerComputerInfoResult.Status == false)
+            {
+                return BadRequest(customerComputerInfoResult);
+            }
+
+            return Ok(customerComputerInfoResult);
+        }
+
+        [HttpPost]
+        [Route("SaveCustomerComputerInfo")]
+        public async Task<IActionResult> Post([FromBody] CustomerComputerInfo customerComputerInfo)
+        {
+            var customerComputerInfoResult = await _customerComputerInfoManager.SaveCustomerComputerInfo(customerComputerInfo);
+            if (customerComputerInfoResult.Status == false)
+            {
+                return BadRequest(customerComputerInfoResult);
+            }
+
+            return Ok(customerComputerInfoResult);
+        }
     }
-
-    [HttpGet]
-    [Route("GetCustomerComputerInfoLists")]
-    public async Task<IActionResult> Get()
-    {
-      var customerComputerInfoResult = await _customerComputerInfoManager.GetCustomerComputerInfoList();
-      if (customerComputerInfoResult.Status == false)
-      {
-        return BadRequest(customerComputerInfoResult);
-      }
-
-      return Ok(customerComputerInfoResult);
-    }
-
-    [HttpPost]
-    [Route("SaveCustomerComputerInfo")]
-    public async Task<IActionResult> Post([FromBody] CustomerComputerInfo customerComputerInfo)
-    {
-      var customerComputerInfoResult = await _customerComputerInfoManager.SaveCustomerComputerInfo(customerComputerInfo);
-      if (customerComputerInfoResult.Status == false)
-      {
-        return BadRequest(customerComputerInfoResult);
-      }
-
-      return Ok(customerComputerInfoResult);
-    }
-  }
 }
