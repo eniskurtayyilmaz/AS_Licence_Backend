@@ -48,7 +48,7 @@ namespace AS_Licence.WebUI.CoreAPI.Controllers
             return Ok(customerComputerInfoResult);
         }
 
-        [HttpPut]
+        [HttpPost]
         [Route("UpdateCustomerComputerInfo")]
         public async Task<IActionResult> Put([FromBody] CustomerComputerInfo customerComputerInfo)
         {
