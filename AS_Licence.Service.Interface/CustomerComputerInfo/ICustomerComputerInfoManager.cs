@@ -18,6 +18,7 @@ namespace AS_Licence.Service.Interface.Customer
     Task<OperationResponse<CustomerComputerInfo>> SaveCustomerComputerInfo(CustomerComputerInfo customer);
     Task<OperationResponse<CustomerComputerInfo>> DeleteCustomerComputerInfoByCustomerComputerInfoId(int id);
     Task<OperationResponse<CustomerComputerInfo>> GetByCustomerComputerInfoId(int id);
+    Task<OperationResponse<CustomerComputerInfo>> UpdateCustomerComputerInfo(CustomerComputerInfo model);
     Task<OperationResponse<List<CustomerComputerInfo>>> GetByCustomerComputerInfoListBySubscriptionId(
       int SubscriptionId);
     Task<OperationResponse<int>> GetAlreadyComputerCountsBySubscriptionId(int subscriptionId);
