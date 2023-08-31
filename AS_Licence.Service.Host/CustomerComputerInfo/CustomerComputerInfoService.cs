@@ -219,5 +219,34 @@ namespace AS_Licence.Service.Host.CustomerComputerInfo
             }
             return response;
         }
+
+        public async Task<OperationResponse<Entities.Model.CustomerComputerInfo.CustomerComputerInfo>> UpdateCustomerComputerInfo(Entities.Model.CustomerComputerInfo.CustomerComputerInfo model)
+        {
+            OperationResponse<Entities.Model.CustomerComputerInfo.CustomerComputerInfo> response = new OperationResponse<Entities.Model.CustomerComputerInfo.CustomerComputerInfo>();
+            try
+            {
+                var existCustomerComputerInfo = await _unitOfWork.CustomerComputerInfoRepository.GetById(model.CustomerComputerInfoId);
+                if (existCustomerComputerInfo != null)
+                {
+                    existCustomerComputerInfo.CustomerComputerInfoProcessSerialCode = model.CustomerComputerInfoProcessSerialCode;
+                    existCustomerComputerInfo.CustomerComputerInfoHddSerialCode = model.CustomerComputerInfoHddSerialCode;
+                    existCustomerComputerInfo.CustomerComputerInfoMacSerialCode = model.CustomerComputerInfoMacSerialCode;
+                    existCustomerComputerInfo.ComputerTagName = model.ComputerTagName;
+                    await _unitOfWork.CustomerComputerInfoRepository.Update(existCustomerComputerInfo);
+                    var responseUnitOfWork = await _unitOfWork.Save();
+
+                    response.Status = responseUnitOfWork.Status;
+                    response.Message = responseUnitOfWork.Message;
+                    response.Data = existCustomerComputerInfo;
+                }
+
+            }
+            catch (Exception e)
+            {
+                response.Status = false;
+                response.Message = e.Message;
+            }
+            return response;
+        }
     }
 }
