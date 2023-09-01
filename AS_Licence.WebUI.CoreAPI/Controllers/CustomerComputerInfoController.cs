@@ -60,5 +60,18 @@ namespace AS_Licence.WebUI.CoreAPI.Controllers
 
             return Ok(customerComputerInfoResult);
         }
+
+        [HttpDelete]
+        [Route("DeleteCustomerComputerInfo/{customerComputerInfoId}")]
+        public async Task<IActionResult> Post(int customerComputerInfoId)
+        {
+            var customerComputerInfoResult = await _customerComputerInfoManager.DeleteCustomerComputerInfoByCustomerComputerInfoId(customerComputerInfoId);
+            if (customerComputerInfoResult.Status == false)
+            {
+                return BadRequest(customerComputerInfoResult);
+            }
+
+            return Ok(customerComputerInfoResult);
+        }
     }
 }
